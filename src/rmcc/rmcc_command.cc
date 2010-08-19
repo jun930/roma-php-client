@@ -74,6 +74,7 @@ namespace rakuten {
       mklhash = rbuf.get_to_token("\r\n");
       if ( mklhash ) {
         if ( strlen(mklhash) != 40 ) {
+	  // @TEST There is no route to reach here.( or fatal bug !!)
           Exception::throw_exception(0, EXP_PRE_MSG,"Invalid mklhash != 40");
         }
         this->roma_ret = RMC_RET_OK;
@@ -102,12 +103,12 @@ namespace rakuten {
 
     inline char* trimq(char * p){
       if ( ! p ) 
-        Exception::throw_exception(0, EXP_PRE_MSG,"Invalid json (trimq)");
+        Exception::throw_exception(0, EXP_PRE_MSG,"Invalid json (trimq)"); // @TEST There is no route to reach here.( or fatal bug !!)
       if ( *p == '"' ){
         char *s1;
         char *p1 = strtok_r(p,"\"",&s1);
         if ( ! p1 ) 
-          Exception::throw_exception(0, EXP_PRE_MSG,"Invalid json (Notfound'\"')");
+          Exception::throw_exception(0, EXP_PRE_MSG,"Invalid json (Notfound'\"')"); // @TEST There is no route to reach here.( or fatal bug !!)
         return p1;
       }
       return p;
@@ -149,7 +150,7 @@ namespace rakuten {
         }else{
           char * p1 = strtok_r(0,"[",&p);  // @TEST There is no padding in the string what The Roma returns.
           if ( ! p1 ) 
-            Exception::throw_exception(0, EXP_PRE_MSG,"Invalid json (Notfound '[')");
+            Exception::throw_exception(0, EXP_PRE_MSG,"Invalid json (Notfound '[')"); // @TEST There is no route to reach here.( or fatal bug !!)
         }
         char *arr = strtok_r(0,"]",&p);
         if ( ! arr ) 
@@ -191,7 +192,7 @@ namespace rakuten {
           rbuf.get_to_token("{");
           char * capability = rbuf.get_to_token("}");
           if ( ! capability ) 
-            Exception::throw_exception(0, EXP_PRE_MSG,"Invalid json (capability)");
+            Exception::throw_exception(0, EXP_PRE_MSG,"Invalid json (capability)"); // @TEST There is no route to reach here.( or fatal bug !!)
           hash_parse<value_callback>()(capability,this->cap,value_callback());
         }
         rbuf.get_to_token(",");
@@ -199,7 +200,7 @@ namespace rakuten {
           rbuf.get_to_token("[");
           char * nodes = rbuf.get_to_token("]");
           if ( ! nodes ) 
-            Exception::throw_exception(0, EXP_PRE_MSG,"Invalid json (nodes)");
+            Exception::throw_exception(0, EXP_PRE_MSG,"Invalid json (nodes)"); // @TEST There is no route to reach here.( or fatal bug !!)
           array_parse::array_t array;
           array_parse()(nodes,array);
           for ( array_parse::array_t::iterator it(array.begin()),itend(array.end());
@@ -213,7 +214,7 @@ namespace rakuten {
           rbuf.get_to_token("{");
           char * hash = rbuf.get_to_token("}");
           if ( ! hash ) 
-            Exception::throw_exception(0, EXP_PRE_MSG,"Invalid json (hash)");
+            Exception::throw_exception(0, EXP_PRE_MSG,"Invalid json (hash)"); // @TEST There is no route to reach here.( or fatal bug !!)
           hash_parse<array_callback>()(hash,this->ht,array_callback());
         }
         rbuf.get_to_token("]");
