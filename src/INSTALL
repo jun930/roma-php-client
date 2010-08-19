@@ -1,0 +1,58 @@
+*************************
+* ROMA C++ client library
+  * How to build ? (librmcc.so)
+    $ ./build.sh
+     It'll create file. 'lib/librmcc.so'
+  * REFERENCE
+     View doc-html/index.html
+  * How to run test ? (librmccd.so)
+    $ WITH_TEST=1 ./build.sh 
+
+    * How to contorol romad cluster on the test ?
+     - You can use 'roma.bash'
+       - For example.(ALL node start) [11211,11212,11213,11214]
+       $ ./roma.bash start
+       - For example.(The node 1 stop) [11212,11213,11214]
+       $ ./roma.bash stop1
+       - For example.(The node 1 start) [11211,11212,11213,11214]
+       $ ./roma.bash start1
+       - Other ...  please see the 'roma.bash'
+
+    * How to get coverege ? 
+       $ ./gcov.sh 
+
+*************************
+* ROMA PHP client library (PHP-extension)
+   It require librmcc.so.
+  * How to build ? (phprmcc.so)
+    * Prepare to build.
+      # pear install -a codegen_pecl
+    * Build
+      $ cd PECL
+      $ WITH_CONFIGURE=1 ./build.sh
+       It'll create file. 'PECL/phprmcc/modules/librmcc.so'
+
+*************************
+* ROMA PHP client class (RomaClient.php)
+   It need setting the php enviroment.
+  * php.ini
+    * How to find the php.ini ?
+      $ php -r 'phpinfo();' | grep php.ini
+    * php.ini settings
+      - extension_dir
+        extension_dir=<PATH-TO-DIRECTORY of phprmcc.so>
+      - extension=phprmcc.so
+  * How to run unit test ?
+    * Prepare to test.
+      # pear channel-discover pear.phpunit.de
+      # pear install phpunit/PHPUnit
+      # pear install xdebug
+    * Test
+      $ WITH_TEST=1 ./build.sh
+  * TEST
+     Please try to kick the test-script to check settings.
+     $ export LD_LIBRARY_PATH=`pwd`/lib:$LD_LIBRARY_PATH
+     $ cd PECL
+     $ php example/test.php
+  * REFERENCE
+     View doc-html/index.html
