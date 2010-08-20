@@ -326,10 +326,10 @@ namespace rakuten {
     }
 
     std::vector<std::string> &  RomaConnection::get_node_key(const char * key){
-      int num_node = this->nodelist.size();
-      if ( num_node ) {
-        this->routing_table();
-      }
+      // int num_node = this->nodelist.size();
+      // if ( num_node ) {
+      //   this->routing_table();
+      // }
       hash_t hash = calc_hash(key,strlen(key));
       TRACE_LOG("HASH:%" HASH_FMT "u KEY:%s",hash,key);
       routing_t::iterator it = this->routing.find(hash);
@@ -344,39 +344,56 @@ namespace rakuten {
       Node *node = 0;
       if ( this->routing_mode != ROUTING_MODE_USE ){
         if ( this->num_valid() < this->inited_list.size() ) {
+          // Check nodes
           timeval tv_now;
           gettimeofday(&tv_now,0);
           unsigned long diff_check = sum_timeval(this->tv_last_check,tv_now);
           if (  diff_check > this->check_threshold ) {
             INFO_LOG("Try to repair connection (msec:%ld)",diff_check);
-            prepare_nodes(this->inited_list);
+            this->prepare_nodes(this->inited_list);
             gettimeofday(&tv_last_check,0);
           }
         }
         node = this->get_node_random();
-      } else if ( cmd.get_op() == Command::RANDOM ){
-        node = this->get_node_random();
-      } else if( cmd.get_op() == Command::KEYED ){
-        std::vector<std::string> & nodes = this->get_node_key(cmd.get_key());
-        for ( std::vector<std::string>::iterator it(nodes.begin()),itend(nodes.end());
-              it != itend;
-              it++){
-          node = prepare_node((*it).c_str());
-          if ( node ) 
-            break;
+      } else {
+        // Check nodes
+        int num_node = this->num_valid();
+        if ( num_node ) {
+          this->routing_table();
+        } else {
+          timeval tv_now;
+          gettimeofday(&tv_now,0);
+          unsigned long diff_check = sum_timeval(this->tv_last_check,tv_now);
+          if (  diff_check > this->check_threshold ) {
+            this->prepare_nodes(this->inited_list); // using nodes of last init().
+            this->routing_table(true);
+          }
         }
-      } else if( cmd.get_op() == Command::KEYEDONE ){
-        std::vector<std::string> & nodes = this->get_node_key(cmd.get_key());
-        std::vector<std::string>::iterator it = nodes.begin();
-        if ( it != nodes.end() ) {
-          node = prepare_node((*it).c_str());
-          if ( ! node ) {
-            // @TEST The case of unstabilized connection.
-            WARN_LOG("Primary node down ! So try to get new routing %s",typeid(cmd).name());
-            if ( routing_table(true) ) {
-              return this->command(cmd);
+        // 
+        if ( cmd.get_op() == Command::RANDOM ){
+          node = this->get_node_random();
+        } else if( cmd.get_op() == Command::KEYED ){
+          std::vector<std::string> & nodes = this->get_node_key(cmd.get_key());
+          for ( std::vector<std::string>::iterator it(nodes.begin()),itend(nodes.end());
+                it != itend;
+                it++){
+            node = this->prepare_node((*it).c_str());
+            if ( node ) 
+              break;
+          }
+        } else if( cmd.get_op() == Command::KEYEDONE ){
+          std::vector<std::string> & nodes = this->get_node_key(cmd.get_key());
+          std::vector<std::string>::iterator it = nodes.begin();
+          if ( it != nodes.end() ) {
+            node = this->prepare_node((*it).c_str());
+            if ( ! node ) {
+              // @TEST The case of unstabilized connection.
+              WARN_LOG("Primary node down ! So try to get new routing %s",typeid(cmd).name());
+              if ( this->routing_table(true) ) {
+                return this->command(cmd);
+              }
+              Exception::throw_exception(0, EXP_PRE_MSG,"Command failure(No-P-nodes) %s",typeid(cmd).name());
             }
-            Exception::throw_exception(0, EXP_PRE_MSG,"Command failure(No-P-nodes) %s",typeid(cmd).name());
           }
         }
       }

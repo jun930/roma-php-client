@@ -15,7 +15,7 @@ case $1 in
 	if [ "$V" == "" ];then
 	    V=0.0.1
 	fi
-	ln -s romaclient rmcc-${V}
+	ln -s roma-php-client rmcc-${V}
 	tar czvhf  rmcc-${V}.tar.gz \
 	    rmcc-${V}/AUTHORS  \
 	    rmcc-${V}/COPYING \
