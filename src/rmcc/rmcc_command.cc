@@ -258,7 +258,7 @@ namespace rakuten {
       return this->key;
     }
 
-    CmdSet::CmdSet(const char * key,int flags, long exp, const char *data, long length,long timeout)
+    CmdSet::CmdSet(const char * key,int flags, long exp, const char *data, long length, long timeout)
       :CmdKeyedOne(NRCVDEF,timeout,key),
        flags(flags),exp(exp),data(data),length(length)
     {
@@ -284,6 +284,37 @@ namespace rakuten {
       }
       return RECV_OVER;
     }
+
+
+    CmdCas::CmdCas(const char * key,int flags, long exp, const char *data, long length, cas_t cas, long timeout)
+      :CmdKeyedOne(NRCVDEF,timeout,key),
+       flags(flags),exp(exp),data(data),length(length),cas(cas)
+    {
+    }
+    void CmdCas::prepare(){
+      this->CmdKeyedOne::prepare();
+      sbuf.append_sprintf("cas %s %d %ld %ld %d\r\n",key,flags,exp,length,cas);
+      sbuf.append(data,length);
+      sbuf.append("\r\n",2);
+    }
+    string_vbuffer & CmdCas::send_callback(){
+      TRACE_LOG("%s",__PRETTY_FUNCTION__);
+      return sbuf;
+    }
+    // @TEST There is no route to reach here.( or fatal bug !!) : CmdCas never becomes BIN_MODE.
+    callback_ret_t CmdCas::recv_callback_bin(string_vbuffer &rbuf){return RECV_OVER;}
+    callback_ret_t CmdCas::recv_callback_line(char * line) {
+      if ( strcmp("STORED",line) == 0 ) {
+        this->roma_ret = RMC_RET_OK;
+      }else if ( strcmp("NOT_STORED",line) == 0 ) {
+      }else if ( strcmp("EXISTS",line) == 0 ) {
+      }else {
+        Exception::throw_exception(0, EXP_PRE_MSG,"%s",line);
+      }
+      return RECV_OVER;
+    }
+
+
 
     CmdDelete::CmdDelete(const char *key,long timeout)
       :CmdKeyedOne(NRCVDEF,timeout,key){
@@ -334,7 +365,6 @@ namespace rakuten {
       ret.length = strtoul(len,0,0);
       const char * clk = strtok_r(0," ",&s1);
       if ( clk ) {
-        // @TEST Cas command is not supported yet.
         ret.cas = strtoul(clk,0,0);
       }
       this->parse_mode = BIN_MODE;
@@ -365,6 +395,35 @@ namespace rakuten {
       this->value = this->parse_value_line(line);
       return RECV_MORE;
     }
+
+    CmdGets::CmdGets(const char * key,long timeout)
+      :CmdBaseGet(NRCVDEF,timeout,key)
+    {
+    }
+    void CmdGets::prepare(){
+      this->CmdKeyed::prepare();
+      sbuf.append_sprintf("gets %s\r\n",key);
+    }
+    string_vbuffer & CmdGets::send_callback(){
+      TRACE_LOG("%s",__PRETTY_FUNCTION__);
+      return sbuf;
+    }
+    callback_ret_t CmdGets::recv_callback_bin(string_vbuffer &rbuf){
+      this->value.data = rbuf.get(this->value.length);
+      if ( this->value.data ) {
+        this->roma_ret = RMC_RET_OK;
+        this->parse_mode = POST_BIN_MODE;
+      }
+      return RECV_MORE;
+    }
+    callback_ret_t CmdGets::recv_callback_line(char * line) {
+      this->value = this->parse_value_line(line);
+      if ( this->value.cas == RMC_CAS_UNINITIALIZED ) {
+        Exception::throw_exception(0, EXP_PRE_MSG,"Unexpected data." );
+      }
+      return RECV_MORE;
+    }
+
 
     CmdAlistSizedInsert::CmdAlistSizedInsert(const char * key,long size,const char *data, long length,long timeout)
       :CmdKeyedOne(NRCVDEF,timeout,key),
