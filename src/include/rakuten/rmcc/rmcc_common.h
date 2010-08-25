@@ -15,6 +15,7 @@ namespace rakuten {
     static const rmc_ret_t RMC_RET_OK = 0;
     static const rmc_ret_t RMC_RET_ERROR = 1;
     static const rmc_ret_t RMC_RET_EXCEPTION = 2;
+    static const rmc_ret_t RMC_CAS_UNINITIALIZED = -1;
     
     typedef int routing_mode_t;
     static const routing_mode_t  ROUTING_MODE_USE = 1; 
@@ -24,7 +25,7 @@ namespace rakuten {
       const char * data;
       long   length;
       cas_t  cas;
-      RomaValue(const char * data =0,long length=-1,cas_t cas=-1);
+      RomaValue(const char * data =0,long length=-1,cas_t cas=RMC_CAS_UNINITIALIZED);
     };
   }
 }

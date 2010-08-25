@@ -103,6 +103,21 @@ namespace rakuten {
       virtual callback_ret_t recv_callback_bin(string_vbuffer &rbuf);
     };
 
+    class CmdCas: public CmdKeyedOne {
+      string_vbuffer sbuf;
+      const int flags;
+      const long exp;
+      const char *data;
+      const long length;
+      const cas_t cas;
+    public:
+      CmdCas(const char * key,int flags, long exp, const char *data, long length, cas_t cas, long timeout);
+      virtual void prepare();
+      virtual string_vbuffer & send_callback();
+      virtual callback_ret_t recv_callback_line(char *line);
+      virtual callback_ret_t recv_callback_bin(string_vbuffer &rbuf);
+    };
+
     class CmdDelete: public CmdKeyedOne {
       string_vbuffer sbuf;
     public:
@@ -125,6 +140,17 @@ namespace rakuten {
     public:
       RomaValue value;
       CmdGet(const char * key,long timeout);
+      virtual void prepare();
+      virtual string_vbuffer & send_callback();
+      virtual callback_ret_t recv_callback_line(char *line);
+      virtual callback_ret_t recv_callback_bin(string_vbuffer &rbuf);
+    };
+
+    class CmdGets: public CmdBaseGet {
+      string_vbuffer sbuf;
+    public:
+      RomaValue value;
+      CmdGets(const char * key,long timeout);
       virtual void prepare();
       virtual string_vbuffer & send_callback();
       virtual callback_ret_t recv_callback_line(char *line);

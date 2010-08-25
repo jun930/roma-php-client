@@ -49,6 +49,18 @@ namespace rakuten{
         throw ex;
       }
     }
+    rmc_ret_t RomaClient::cmd_cas(const char *key, RomaValue value, long exptime,cas_t cas,long timeout){
+      try {
+        CmdCas cmd(key,0,exptime,value.data,value.length,cas,timeout);
+        cmd.prepare();
+        conn.command(cmd);
+        return cmd.roma_ret;
+      }catch(const rakuten::Exception & ex ) {
+        ERR_LOG(ex.get_msg());
+        this->lasterr << ex.get_func() << ":" << ex.get_line() << ":" << ex.get_msg();
+        throw ex;
+      }
+    }
 
     rmc_ret_t RomaClient::cmd_delete(const char *key,long timeout){
       try {
@@ -74,6 +86,20 @@ namespace rakuten{
         throw ex;
       }
     }
+
+    RomaValue RomaClient::cmd_gets(const char *key,long timeout){
+      try {
+        CmdGets cmd(key,timeout);
+        cmd.prepare();
+        this->conn.command(cmd);
+        return cmd.value;
+      }catch(const Exception & ex ) {
+        this->lasterr << ex.get_func() << ":" << ex.get_line() << ":" << ex.get_msg();
+        throw ex;
+      }
+    }
+
+
     rmc_ret_t RomaClient::cmd_alist_sized_insert(const char *key, long size, RomaValue value,long timeout){
       try {
         CmdAlistSizedInsert cmd(key,size,value.data,value.length,timeout);

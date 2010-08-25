@@ -71,6 +71,19 @@ namespace rakuten {
        */
       rmc_ret_t cmd_store(const char *key, RomaValue value, long exptime,long timeout);
       /**
+       * @brief Issue CAS command.
+       *
+       * @param key Specify the key.
+       * @param value Specify the value structure.
+       * @param exptime Specify the expires. 0 means infinity.
+       * @param cas Specify the cas-id.
+       * @param timeout Specify the timeout(msec).
+       *
+       * @return On success RMC_RET_OK returnd.
+       * @throws Exception Around network error or SERVER_ERROR returns. It'll be set the error message.
+       */
+      rmc_ret_t cmd_cas(const char *key, RomaValue value, long exptime,cas_t cas,long timeout);
+      /**
        * @brief Issue DELETE command.
        *
        * @param key Specify the key.
@@ -90,6 +103,16 @@ namespace rakuten {
        * @throws Exception Around network error or SERVER_ERROR returns. It'll be set the error message.
        */
       RomaValue cmd_get(const char *key,long timeout);
+      /**
+       * @brief Issue GETS command. (CAS)
+       *
+       * @param key Specify the key.
+       * @param timeout Specify the timeout(msec).
+       *
+       * @return Returns value-structure. This buffer is temporary. It'll be cleared when the next command is issued.
+       * @throws Exception Around network error or SERVER_ERROR returns. It'll be set the error message.
+       */
+      RomaValue cmd_gets(const char *key,long timeout);
       /**
        * @brief Issue ALIST_SIZED_INSERT command.
        *

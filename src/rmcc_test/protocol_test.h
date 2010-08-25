@@ -32,6 +32,17 @@ public:
   void testSetTimeout();
   void testSetClose();
 
+  void testCasStoredVal();
+  void testCasStored();
+  void testCasStoredCas();
+  void testCasStoredExp();
+  void testCasExists();
+  void testCasNotStored();
+  void testCasServerError();
+  void testCasError();
+  void testCasTimeout();
+  void testCasClose();
+
   void testGetNull();
   void testGetValue();
   void testGetValueError1();
@@ -44,6 +55,20 @@ public:
   void testGetTimeout();
   void testGetClose();
   void testGetClose2();
+
+  void testGetsNull();
+  void testGetsValue();
+  void testGetsValueError1();
+  void testGetsValueError2();
+  void testGetsValueError3();
+  void testGetsValueError4();
+  void testGetsValueError5();
+  void testGetsLarge();
+  void testGetsServerError();
+  void testGetsError();
+  void testGetsTimeout();
+  void testGetsClose();
+  void testGetsClose2();
 
   void testDeleteDeleted();
   void testDeleteNotDeleted();

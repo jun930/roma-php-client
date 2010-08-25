@@ -113,6 +113,89 @@ void ProtocolTest::testSetClose() {
   }
 }
 
+void ProtocolTest::testCasStored() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  rmc_ret_t ret = client.cmd_cas("CMD_STORED",RomaValue("bbb",3),100,1,TIMEOUT);
+  CPPUNIT_ASSERT_EQUAL(0,ret);
+}
+
+
+void ProtocolTest::testCasStoredVal() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  rmc_ret_t ret = client.cmd_cas("CMPV_bbbBBbb",RomaValue("bbbBBbb",7),100,1,TIMEOUT);
+  CPPUNIT_ASSERT_EQUAL(0,ret);
+}
+
+void ProtocolTest::testCasStoredExp() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  rmc_ret_t ret = client.cmd_cas("CMP3_99",RomaValue("bbb",3),99,1,TIMEOUT);
+  CPPUNIT_ASSERT_EQUAL(0,ret);
+}
+
+void ProtocolTest::testCasStoredCas() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  rmc_ret_t ret = client.cmd_cas("CMP5_99",RomaValue("bbbBBbb",7),100,99,TIMEOUT);
+  CPPUNIT_ASSERT_EQUAL(0,ret);
+}
+
+void ProtocolTest::testCasExists() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  rmc_ret_t ret = client.cmd_cas("CMD_EXISTS",RomaValue("bbb",3),100,1,TIMEOUT);
+  CPPUNIT_ASSERT_EQUAL(1,ret);
+}
+
+void ProtocolTest::testCasNotStored() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  rmc_ret_t ret = client.cmd_cas("CMD_NOT_STORED",RomaValue("bbb",3),100,1,TIMEOUT);
+  CPPUNIT_ASSERT_EQUAL(1,ret);
+}
+
+void ProtocolTest::testCasServerError() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try{
+    rmc_ret_t ret = client.cmd_cas("CMD_SERVER_ERROR",RomaValue("bbb",3),100,1,TIMEOUT);
+    (void)ret;
+    CPPUNIT_FAIL("Should throw !");
+  }catch(const Exception & ex){
+    CPPUNIT_ASSERT(client.get_lasterror() != NULL);
+  }
+}
+
+
+void ProtocolTest::testCasError() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try{
+    rmc_ret_t ret = client.cmd_cas("CMD_ERROR",RomaValue("bbb",3),100,1,TIMEOUT);
+    (void)ret;
+    CPPUNIT_FAIL("Should throw !");
+  }catch(const Exception & ex){
+    CPPUNIT_ASSERT(client.get_lasterror() != NULL);
+  }
+}
+
+
+void ProtocolTest::testCasTimeout() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try {
+    rmc_ret_t ret = client.cmd_cas("TO_10",RomaValue("bbb",3),100,1,TIMEOUT);
+    (void)ret;
+    CPPUNIT_FAIL("Should throw !");
+  }catch(const Exception & ex){
+  }
+}
+
+
+void ProtocolTest::testCasClose() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try{
+    rmc_ret_t ret = client.cmd_cas("CLOSE_",RomaValue("bbb",3),100,1,TIMEOUT);
+    (void)ret;
+    CPPUNIT_FAIL("Should throw !");
+  }catch(const Exception & ex){
+    CPPUNIT_ASSERT(client.get_lasterror() != NULL);
+  }
+}
+
 
 
 void ProtocolTest::testGetNull() {
@@ -225,6 +308,131 @@ void ProtocolTest::testGetClose2() {
   RomaValue v = client.cmd_get("CLOSE2_",TIMEOUT);
   CPPUNIT_ASSERT_EQUAL(string("FOOBAR"),string(v.data));
   v = client.cmd_get("CLOSE2_",TIMEOUT);
+  CPPUNIT_ASSERT_EQUAL(string("FOOBAR"),string(v.data));
+}
+
+
+
+
+void ProtocolTest::testGetsNull() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  RomaValue v = client.cmd_gets("CMD_NULL",TIMEOUT);
+  CPPUNIT_ASSERT_EQUAL((const char *)0,v.data);
+  CPPUNIT_ASSERT_EQUAL((long)-1,v.length);
+}
+
+
+void ProtocolTest::testGetsValue() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  RomaValue v = client.cmd_gets("CMD_VALUE",TIMEOUT);
+  CPPUNIT_ASSERT_EQUAL(string("FOOBAR"),string(v.data));
+}
+
+
+void ProtocolTest::testGetsValueError1() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try {
+    RomaValue v = client.cmd_gets("CMD_VALUEERR1",TIMEOUT);
+    (void)v;
+    CPPUNIT_FAIL("Should throw !");
+  }catch(const Exception & ex){
+  }
+}
+
+void ProtocolTest::testGetsValueError2() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try {
+    RomaValue v = client.cmd_gets("CMD_VALUEERR2",TIMEOUT);
+    (void)v;
+    CPPUNIT_FAIL("Should throw !");
+  }catch(const Exception & ex){
+  }
+}
+
+void ProtocolTest::testGetsValueError3() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try {
+    RomaValue v = client.cmd_gets("CMD_VALUEERR3",TIMEOUT);
+    (void)v;
+    CPPUNIT_FAIL("Should throw !");
+  }catch(const Exception & ex){
+  }
+}
+
+void ProtocolTest::testGetsValueError4() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try {
+    RomaValue v = client.cmd_gets("CMD_VALUEERR4",TIMEOUT);
+    (void)v;
+    CPPUNIT_FAIL("Should throw !");
+  }catch(const Exception & ex){
+  }
+}
+
+void ProtocolTest::testGetsValueError5() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try {
+    RomaValue v = client.cmd_gets("CMD_VALUEERR5",TIMEOUT);
+    (void)v;
+    CPPUNIT_FAIL("Should throw !");
+  }catch(const Exception & ex){
+  }
+}
+
+void ProtocolTest::testGetsLarge() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  RomaValue v = client.cmd_gets("CMD_LARGE",TIMEOUT);
+  CPPUNIT_ASSERT_EQUAL((long)100000,v.length);
+  CPPUNIT_ASSERT_EQUAL((size_t)100000,strlen(v.data));
+}
+
+
+void ProtocolTest::testGetsServerError() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try {
+    RomaValue v = client.cmd_gets("CMD_SERVER_ERROR",TIMEOUT);
+    CPPUNIT_FAIL("Should throw !");
+  }catch(const Exception & ex){
+  }
+}
+
+
+void ProtocolTest::testGetsError() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try {
+    RomaValue v = client.cmd_gets("CMD_ERROR",TIMEOUT);
+    (void)v;
+    CPPUNIT_FAIL("Should throw !");
+  }catch(const Exception & ex){
+  }
+}
+
+
+void ProtocolTest::testGetsTimeout() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try {
+    RomaValue v = client.cmd_gets("TO_10",TIMEOUT);
+    (void)v;
+    CPPUNIT_FAIL("Should throw !");
+  }catch(const Exception & ex){
+  }
+}
+
+
+void ProtocolTest::testGetsClose() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try {
+    RomaValue v = client.cmd_gets("CLOSE_",TIMEOUT);
+    (void)v;
+    CPPUNIT_FAIL("Should throw !");
+  }catch(const Exception & ex){
+  }
+}
+void ProtocolTest::testGetsClose2() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  RomaValue v = client.cmd_gets("CLOSE2_",TIMEOUT);
+  CPPUNIT_ASSERT_EQUAL(string("FOOBAR"),string(v.data));
+  v = client.cmd_gets("CLOSE2_",TIMEOUT);
   CPPUNIT_ASSERT_EQUAL(string("FOOBAR"),string(v.data));
 }
 
@@ -613,6 +821,16 @@ struct GetSuite {
     suite->addTest(new CppUnit::TestCaller<TEST >("testSetTimeout",&TEST::testSetTimeout));
     suite->addTest(new CppUnit::TestCaller<TEST >("testSetClose",&TEST::testSetClose));
 
+    suite->addTest(new CppUnit::TestCaller<TEST >("testCasStoredVal",&TEST::testCasStoredVal));
+    suite->addTest(new CppUnit::TestCaller<TEST >("testCasStored",&TEST::testCasStored));
+    suite->addTest(new CppUnit::TestCaller<TEST >("testCasStoredExp",&TEST::testCasStoredExp));
+    suite->addTest(new CppUnit::TestCaller<TEST >("testCasExists",&TEST::testCasExists));
+    suite->addTest(new CppUnit::TestCaller<TEST >("testCasNotStored",&TEST::testCasNotStored));
+    suite->addTest(new CppUnit::TestCaller<TEST >("testCasServerError",&TEST::testCasServerError));
+    suite->addTest(new CppUnit::TestCaller<TEST >("testCasError",&TEST::testCasError));
+    suite->addTest(new CppUnit::TestCaller<TEST >("testCasTimeout",&TEST::testCasTimeout));
+    suite->addTest(new CppUnit::TestCaller<TEST >("testCasClose",&TEST::testCasClose));
+
     suite->addTest(new CppUnit::TestCaller<TEST >("testGetNull",&TEST::testGetNull));
     suite->addTest(new CppUnit::TestCaller<TEST >("testGetValue",&TEST::testGetValue));
     suite->addTest(new CppUnit::TestCaller<TEST >("testGetValueError1",&TEST::testGetValueError1));
@@ -625,6 +843,20 @@ struct GetSuite {
     suite->addTest(new CppUnit::TestCaller<TEST >("testGetTimeout",&TEST::testGetTimeout));
     suite->addTest(new CppUnit::TestCaller<TEST >("testGetClose",&TEST::testGetClose));
     suite->addTest(new CppUnit::TestCaller<TEST >("testGetClose2",&TEST::testGetClose2));
+
+    suite->addTest(new CppUnit::TestCaller<TEST >("testGetsNull",&TEST::testGetsNull));
+    suite->addTest(new CppUnit::TestCaller<TEST >("testGetsValue",&TEST::testGetsValue));
+    suite->addTest(new CppUnit::TestCaller<TEST >("testGetsValueError1",&TEST::testGetsValueError1));
+    suite->addTest(new CppUnit::TestCaller<TEST >("testGetsValueError2",&TEST::testGetsValueError2));
+    suite->addTest(new CppUnit::TestCaller<TEST >("testGetsValueError3",&TEST::testGetsValueError3));
+    suite->addTest(new CppUnit::TestCaller<TEST >("testGetsValueError4",&TEST::testGetsValueError4));
+    suite->addTest(new CppUnit::TestCaller<TEST >("testGetsValueError5",&TEST::testGetsValueError5));
+    suite->addTest(new CppUnit::TestCaller<TEST >("testGetsLarge",&TEST::testGetsLarge));
+    suite->addTest(new CppUnit::TestCaller<TEST >("testGetsServerError",&TEST::testGetsServerError));
+    suite->addTest(new CppUnit::TestCaller<TEST >("testGetsError",&TEST::testGetsError));
+    suite->addTest(new CppUnit::TestCaller<TEST >("testGetsTimeout",&TEST::testGetsTimeout));
+    suite->addTest(new CppUnit::TestCaller<TEST >("testGetsClose",&TEST::testGetsClose));
+    suite->addTest(new CppUnit::TestCaller<TEST >("testGetsClose2",&TEST::testGetsClose2));
 
     suite->addTest(new CppUnit::TestCaller<TEST >("testDeleteDeleted",&TEST::testDeleteDeleted));
     suite->addTest(new CppUnit::TestCaller<TEST >("testDeleteNotDeleted",&TEST::testDeleteNotDeleted));
