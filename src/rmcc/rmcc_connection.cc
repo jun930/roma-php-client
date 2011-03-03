@@ -294,7 +294,7 @@ namespace rakuten {
       if ( ! num_node ) {
         Exception::throw_exception(0, EXP_PRE_MSG,"No more valid node !" );
       }
-      int index = (1+rand_r(&this->seed))*(static_cast<double>(num_node)/RAND_MAX);
+      int index = (int)((1+rand_r(&this->seed))*(static_cast<double>(num_node)/RAND_MAX));
       node_list_t::iterator it = nodelist.begin();
       for( int i= 0;i<index;i++){
         // @TEST For the torture test
