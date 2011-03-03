@@ -70,6 +70,11 @@ namespace rakuten {
        * @throws Exception Around network error or SERVER_ERROR returns. It'll be set the error message.
        */
       rmc_ret_t cmd_store(const char *key, RomaValue value, long exptime,long timeout);
+      rmc_ret_t cmd_add(const char *key, RomaValue value, long exptime,long timeout);
+      rmc_ret_t cmd_replace(const char *key, RomaValue value, long exptime,long timeout);
+      rmc_ret_t cmd_append(const char *key, RomaValue value, long exptime,long timeout);
+      rmc_ret_t cmd_prepend(const char *key, RomaValue value, long exptime,long timeout);
+
       /**
        * @brief Issue CAS command.
        *
@@ -93,6 +98,28 @@ namespace rakuten {
        * @throws Exception Around network error or SERVER_ERROR returns. It'll be set the error message.
        */
       rmc_ret_t cmd_delete(const char *key,long timeout);
+      /**
+       * @brief Issue INCR command.
+       *
+       * @param key Specify the key.
+       * @param param is the amount by which the client wants to increase the item.
+       * @param timeout Specify the timeout(msec).
+       *
+       * @return On success new value of the item's data, other than -1.
+       * @throws Exception Around network error or SERVER_ERROR returns.
+       */
+      rmc_ret_t cmd_incr(const char *key, int param, long timeout);
+      /**
+       * @brief Issue DECR command.
+       *
+       * @param key Specify the key.
+       * @param param is the amount by which the client wants to decrease the item.
+       * @param timeout Specify the timeout(msec).
+       *
+       * @return On success new value of the item's data, other than -1.
+       * @throws Exception Around network error or SERVER_ERROR returns.
+       */
+      rmc_ret_t cmd_decr(const char *key, int param, long timeout);
       /**
        * @brief Issue GET command.
        *

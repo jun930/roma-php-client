@@ -258,24 +258,25 @@ namespace rakuten {
       return this->key;
     }
 
-    CmdSet::CmdSet(const char * key,int flags, long exp, const char *data, long length, long timeout)
+
+    CmdSuperSet::CmdSuperSet(const char * cmdstr,const char * key,int flags, long exp, const char *data, long length, long timeout)
       :CmdKeyedOne(NRCVDEF,timeout,key),
-       flags(flags),exp(exp),data(data),length(length)
+       cmdstr(cmdstr),flags(flags),exp(exp),data(data),length(length)
     {
     }
-    void CmdSet::prepare(){
+    void CmdSuperSet::prepare(){
       this->CmdKeyedOne::prepare();
-      sbuf.append_sprintf("set %s %d %ld %ld\r\n",key,flags,exp,length);
+      sbuf.append_sprintf("%s %s %d %ld %ld\r\n",cmdstr,key,flags,exp,length);
       sbuf.append(data,length);
       sbuf.append("\r\n",2);
     }
-    string_vbuffer & CmdSet::send_callback(){
+    string_vbuffer & CmdSuperSet::send_callback(){
       TRACE_LOG("%s",__PRETTY_FUNCTION__);
       return sbuf;
     }
     // @TEST There is no route to reach here.( or fatal bug !!) : CmdSet never becomes BIN_MODE.
-    callback_ret_t CmdSet::recv_callback_bin(string_vbuffer &rbuf){return RECV_OVER;}
-    callback_ret_t CmdSet::recv_callback_line(char * line) {
+    callback_ret_t CmdSuperSet::recv_callback_bin(string_vbuffer &rbuf){return RECV_OVER;}
+    callback_ret_t CmdSuperSet::recv_callback_line(char * line) {
       if ( strcmp("STORED",line) == 0 ) {
         this->roma_ret = RMC_RET_OK;
       }else if ( strcmp("NOT_STORED",line) == 0 ) {
@@ -284,7 +285,6 @@ namespace rakuten {
       }
       return RECV_OVER;
     }
-
 
     CmdCas::CmdCas(const char * key,int flags, long exp, const char *data, long length, cas_t cas, long timeout)
       :CmdKeyedOne(NRCVDEF,timeout,key),
@@ -341,6 +341,51 @@ namespace rakuten {
       return RECV_OVER;
     }
     
+    CmdIncr::CmdIncr(const char * key,int param,long timeout)
+      :CmdKeyedOne(NRCVDEF,timeout,key),
+       param(param)
+    {
+    }
+    void CmdIncr::prepare(){
+      this->CmdKeyedOne::prepare();
+      sbuf.append_sprintf("incr %s %d\r\n",key,param);
+    }
+    string_vbuffer & CmdIncr::send_callback(){
+      TRACE_LOG("%s",__PRETTY_FUNCTION__);
+      return sbuf;
+    }
+    callback_ret_t CmdIncr::recv_callback_bin(string_vbuffer &rbuf){return RECV_OVER;}
+    callback_ret_t CmdIncr::recv_callback_line(char * line) {
+      if ( strcmp("NOT_FOUND",line) == 0 ){
+      }else{
+	this->roma_ret = RMC_RET_OK;
+	this->value = atoi(line);
+      }
+      return RECV_OVER;
+    }
+
+    CmdDecr::CmdDecr(const char * key,int param,long timeout)
+      :CmdKeyedOne(NRCVDEF,timeout,key),
+       param(param)
+    {
+    }
+    void CmdDecr::prepare(){
+      this->CmdKeyedOne::prepare();
+      sbuf.append_sprintf("decr %s %d\r\n",key,param);
+    }
+    string_vbuffer & CmdDecr::send_callback(){
+      TRACE_LOG("%s",__PRETTY_FUNCTION__);
+      return sbuf;
+    }
+    callback_ret_t CmdDecr::recv_callback_bin(string_vbuffer &rbuf){return RECV_OVER;}
+    callback_ret_t CmdDecr::recv_callback_line(char * line) {
+      if ( strcmp("NOT_FOUND",line) == 0 ){
+      }else{
+	this->roma_ret = RMC_RET_OK;
+	this->value = atoi(line);
+      }
+      return RECV_OVER;
+    }
 
     CmdBaseGet::CmdBaseGet(size_t nrcv,long timeout,const char *key):CmdKeyed(nrcv,timeout,key){}
     RomaValue CmdBaseGet::parse_value_line(char * line){

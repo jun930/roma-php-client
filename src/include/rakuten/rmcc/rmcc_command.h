@@ -36,6 +36,7 @@ namespace rakuten {
       parse_mode_t parse_mode;
       rmc_ret_t roma_ret;
       Command(op_t op,size_t nrcv,long timeout);
+      virtual ~Command(){}
       virtual void prepare() = 0;
       virtual const op_t get_op()const;
       virtual const char * get_key()const = 0;
@@ -89,18 +90,49 @@ namespace rakuten {
       virtual const char * get_key()const;
     };
 
-    class CmdSet: public CmdKeyedOne {
+    class CmdSuperSet: public CmdKeyedOne {
       string_vbuffer sbuf;
+      const char *cmdstr;
       const int flags;
       const long exp;
       const char *data;
       const long length;
     public:
-      CmdSet(const char * key,int flags, long exp, const char *data, long length,long timeout);
+      CmdSuperSet(const char *cmdstr,const char * key,int flags, long exp, const char *data, long length,long timeout);
       virtual void prepare();
       virtual string_vbuffer & send_callback();
       virtual callback_ret_t recv_callback_line(char *line);
       virtual callback_ret_t recv_callback_bin(string_vbuffer &rbuf);
+    };
+    
+    class CmdSet: public CmdSuperSet {
+    public:
+      CmdSet(const char * key,int flags, long exp, const char *data, long length,long timeout)
+	:CmdSuperSet("set",key,flags,exp,data,length,timeout){}
+    };
+
+    class CmdAdd: public CmdSuperSet {
+    public:
+      CmdAdd(const char * key,int flags, long exp, const char *data, long length,long timeout)
+	:CmdSuperSet("add",key,flags,exp,data,length,timeout){}
+    };
+    
+    class CmdReplace: public CmdSuperSet {
+    public:
+      CmdReplace(const char * key,int flags, long exp, const char *data, long length,long timeout)
+	:CmdSuperSet("replace",key,flags,exp,data,length,timeout){}
+    };
+
+    class CmdAppend: public CmdSuperSet {
+    public:
+      CmdAppend(const char * key,int flags, long exp, const char *data, long length,long timeout)
+	:CmdSuperSet("append",key,flags,exp,data,length,timeout){}
+    };
+
+    class CmdPrepend: public CmdSuperSet {
+    public:
+      CmdPrepend(const char * key,int flags, long exp, const char *data, long length,long timeout)
+	:CmdSuperSet("prepend",key,flags,exp,data,length,timeout){}
     };
 
     class CmdCas: public CmdKeyedOne {
@@ -126,6 +158,30 @@ namespace rakuten {
       virtual string_vbuffer & send_callback();
       virtual callback_ret_t recv_callback_line(char *line);
       virtual callback_ret_t recv_callback_bin(string_vbuffer &rbuf);
+    };
+
+    class CmdIncr: public CmdKeyedOne {
+      string_vbuffer sbuf;
+      const int param;
+    public:
+      int value;
+      CmdIncr(const char * key,int param,long timeout);
+      virtual void prepare();
+      virtual string_vbuffer & send_callback();
+      virtual callback_ret_t recv_callback_line(char *line);
+      virtual callback_ret_t recv_callback_bin(string_vbuffer &rbuf);      
+    };
+
+    class CmdDecr: public CmdKeyedOne {
+      string_vbuffer sbuf;
+      const int param;
+    public:
+      int value;
+      CmdDecr(const char * key,int param,long timeout);
+      virtual void prepare();
+      virtual string_vbuffer & send_callback();
+      virtual callback_ret_t recv_callback_line(char *line);
+      virtual callback_ret_t recv_callback_bin(string_vbuffer &rbuf);      
     };
 
     class CmdBaseGet: public CmdKeyed {

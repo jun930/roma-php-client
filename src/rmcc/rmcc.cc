@@ -37,6 +37,7 @@ namespace rakuten{
         throw ex;
       }
     }
+    
     rmc_ret_t RomaClient::cmd_store(const char *key, RomaValue value, long exptime,long timeout){
       try {
         CmdSet cmd(key,0,exptime,value.data,value.length,timeout);
@@ -49,6 +50,59 @@ namespace rakuten{
         throw ex;
       }
     }
+
+    rmc_ret_t RomaClient::cmd_add(const char *key, RomaValue value, long exptime,long timeout){
+      try {
+        CmdAdd cmd(key,0,exptime,value.data,value.length,timeout);
+        cmd.prepare();
+        conn.command(cmd);
+        return cmd.roma_ret;
+      }catch(const rakuten::Exception & ex ) {
+        ERR_LOG(ex.get_msg());
+        this->lasterr << ex.get_func() << ":" << ex.get_line() << ":" << ex.get_msg();
+        throw ex;
+      }
+    }
+
+    rmc_ret_t RomaClient::cmd_replace(const char *key, RomaValue value, long exptime,long timeout){
+      try {
+        CmdReplace cmd(key,0,exptime,value.data,value.length,timeout);
+        cmd.prepare();
+        conn.command(cmd);
+        return cmd.roma_ret;
+      }catch(const rakuten::Exception & ex ) {
+        ERR_LOG(ex.get_msg());
+        this->lasterr << ex.get_func() << ":" << ex.get_line() << ":" << ex.get_msg();
+        throw ex;
+      }
+    }
+
+    rmc_ret_t RomaClient::cmd_append(const char *key, RomaValue value, long exptime,long timeout){
+      try {
+        CmdAppend cmd(key,0,exptime,value.data,value.length,timeout);
+        cmd.prepare();
+        conn.command(cmd);
+        return cmd.roma_ret;
+      }catch(const rakuten::Exception & ex ) {
+        ERR_LOG(ex.get_msg());
+        this->lasterr << ex.get_func() << ":" << ex.get_line() << ":" << ex.get_msg();
+        throw ex;
+      }
+    }
+
+    rmc_ret_t RomaClient::cmd_prepend(const char *key, RomaValue value, long exptime,long timeout){
+      try {
+        CmdPrepend cmd(key,0,exptime,value.data,value.length,timeout);
+        cmd.prepare();
+        conn.command(cmd);
+        return cmd.roma_ret;
+      }catch(const rakuten::Exception & ex ) {
+        ERR_LOG(ex.get_msg());
+        this->lasterr << ex.get_func() << ":" << ex.get_line() << ":" << ex.get_msg();
+        throw ex;
+      }
+    }
+
     rmc_ret_t RomaClient::cmd_cas(const char *key, RomaValue value, long exptime,cas_t cas,long timeout){
       try {
         CmdCas cmd(key,0,exptime,value.data,value.length,cas,timeout);
@@ -68,6 +122,36 @@ namespace rakuten{
         cmd.prepare();
         conn.command(cmd);
         return cmd.roma_ret;
+      }catch(const rakuten::Exception & ex ) {
+        ERR_LOG(ex.get_msg());
+        this->lasterr << ex.get_func() << ":" << ex.get_line() << ":" << ex.get_msg();
+        throw ex;
+      }
+    }
+
+    rmc_ret_t RomaClient::cmd_incr(const char *key, int param, long timeout){
+      try {
+	CmdIncr cmd(key,param,timeout);
+	cmd.prepare();
+	this->conn.command(cmd);
+	if(cmd.roma_ret == RMC_RET_ERROR)
+	  return -1;
+	return cmd.value;
+      }catch(const rakuten::Exception & ex ) {
+        ERR_LOG(ex.get_msg());
+        this->lasterr << ex.get_func() << ":" << ex.get_line() << ":" << ex.get_msg();
+        throw ex;
+      }
+    }
+
+    rmc_ret_t RomaClient::cmd_decr(const char *key, int param, long timeout){
+      try {
+	CmdDecr cmd(key,param,timeout);
+	cmd.prepare();
+	this->conn.command(cmd);
+	if(cmd.roma_ret == RMC_RET_ERROR)
+	  return -1;
+	return cmd.value;
       }catch(const rakuten::Exception & ex ) {
         ERR_LOG(ex.get_msg());
         this->lasterr << ex.get_func() << ":" << ex.get_line() << ":" << ex.get_msg();

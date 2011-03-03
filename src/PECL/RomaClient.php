@@ -86,7 +86,7 @@ class RomaClient {
      * @return Returns True if success.
      */
     public function set($key, $value, $exptime) {
-      $result = rmc_set($this->client_id,$key, $value, $exptime,$this->default_timeout);
+      $result = rmc_set($this->client_id, $key, $value, $exptime, $this->default_timeout);
       if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
         throw new Exception("rmc_set() failure");
       }else if ( $result == RomaClient::RMC_RET_ERROR ) {
@@ -95,7 +95,97 @@ class RomaClient {
       return True;
     }
     
+    /**
+     * @brief Add value.(Issue 'add' command).
+     * @param key
+     * @param value
+     * @param exptime Specify the value of expire second.
+     * @return Returns True if success.
+     */
+    public function add($key, $value, $exptime) {
+      $result = rmc_add($this->client_id, $key, $value, $exptime, $this->default_timeout);
+      if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
+        throw new Exception("rmc_add() failure");
+      }else if ( $result == RomaClient::RMC_RET_ERROR ) {
+	return False;
+      }
+      return True;
+    }
 
+    /**
+     * @brief Replace value.(Issue 'replace' command).
+     * @param key
+     * @param value
+     * @param exptime Specify the value of expire second.
+     * @return Returns True if success.
+     */
+    public function replace($key, $value, $exptime) {
+      $result = rmc_replace($this->client_id, $key, $value, $exptime, $this->default_timeout);
+      if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
+        throw new Exception("rmc_replace() failure");
+      }else if ( $result == RomaClient::RMC_RET_ERROR ) {
+	return False;
+      }
+      return True;
+    }
+
+    /**
+     * @brief Append value.(Issue 'append' command).
+     * @param key
+     * @param value
+     * @param exptime Specify the value of expire second.
+     * @return Returns True if success.
+     */
+    public function append($key, $value, $exptime) {
+      $result = rmc_append($this->client_id, $key, $value, $exptime, $this->default_timeout);
+      if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
+        throw new Exception("rmc_append() failure");
+      }else if ( $result == RomaClient::RMC_RET_ERROR ) {
+	return False;
+      }
+      return True;
+    }
+
+    /**
+     * @brief Prepend value.(Issue 'prepend' command).
+     * @param key
+     * @param value
+     * @param exptime Specify the value of expire second.
+     * @return Returns True if success.
+     */
+    public function prepend($key, $value, $exptime) {
+      $result = rmc_prepend($this->client_id, $key, $value, $exptime, $this->default_timeout);
+      if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
+        throw new Exception("rmc_prepend() failure");
+      }else if ( $result == RomaClient::RMC_RET_ERROR ) {
+	return False;
+      }
+      return True;
+    }
+
+    /**
+     * @brief Cas value.(Issue 'cas' command).
+     * @param key
+     * @param value
+     * @param cas
+     * @param exptime Specify the value of expire second.
+     * @return Returns True if success.
+     */
+    public function cas($key, $value, $cas, $exptime) {
+      $result = rmc_cas($this->client_id, $key, $value, $exptime, $cas, $this->default_timeout);
+      if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
+        throw new Exception("rmc_cas() failure");
+      }else if ( $result == RomaClient::RMC_RET_ERROR ) {
+	return False;
+      }
+      return True;
+    }
+
+    /**
+     * @brief Delete value.(Issue 'delete' command).
+     * @param key             (string)
+     * @return Returns True if success.
+     */
     public function delete($key) {
       $result = rmc_delete($this->client_id, $key, $this->default_timeout);
       if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
@@ -103,8 +193,35 @@ class RomaClient {
       }else if ( $result == RomaClient::RMC_RET_ERROR ) {
 	return False;
       }
-
       return True;
+    }
+
+    /**
+     * @brief Incr value.(Issue 'incr' command).
+     * @param key
+     * @param param is the amount by which the client wants to increase the item.
+     * @return On success new value of the item's data, other than -1.
+     */
+    public function incr($key, $param) {
+      $result = rmc_incr($this->client_id, $key, $param, $this->default_timeout);
+      if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
+        throw new Exception("rmc_incr() failure");
+      }
+      return $result;      
+    }
+
+    /**
+     * @brief Decr value.(Issue 'decr' command).
+     * @param key
+     * @param param is the amount by which the client wants to decrease the item.
+     * @return On success new value of the item's data, other than -1.
+     */
+    public function decr($key, $param) {
+      $result = rmc_incr($this->client_id, $key, $param, $this->default_timeout);
+      if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
+        throw new Exception("rmc_decr() failure");
+      }
+      return $result;      
     }
 
     /**
@@ -192,68 +309,6 @@ class RomaClient {
     }
 }
 
-    /**
-     * add value.
-     * @param key             (string)
-     * @param value           (string)
-     * @param expire time     (int)
-     * @return [success|fail] (bool)
-     */
-    /* public function add($key, $value, $exptime) { */
-    /*     /\* $result = rmc_add($key, $value, $exptime); *\/ */
-    /*     /\* return ($result == RomaClient::STORED ? True : False); *\/ */
-    /*   throw new Exception("Not implements !"); */
-    /* } */
-    
-    /**
-     * replace value.
-     * @param key             (string)
-     * @param value           (string)
-     * @param expire time     (int)
-     * @return [success|fail] (bool)
-     */
-    /* public function replace($key, $value, $exptime) { */
-    /*     /\* $result = rmc_replace($key, $value, $exptime); *\/ */
-    /*     /\* return ($result == RomaClient::STORED ? True : False); *\/ */
-    /*   throw new Exception("Not implements !"); */
-    /* } */
-    
-    /**
-     * append value.
-     * @param key             (string)
-     * @param value           (string)
-     * @param expire time     (int)
-     * @return [success|fail] (bool)
-     */
-    /* public function append($key, $value, $exptime) { */
-    /*     /\* $result = rmc_append($key, $value, $exptime); *\/ */
-    /*     /\* return ($result == RomaClient::STORED ? True : False); *\/ */
-    /*   throw new Exception("Not implements !"); */
-    /* } */
-    
-    /**
-     * prepend value.
-     * @param key             (string)
-     * @param value           (string)
-     * @param expire time     (int)
-     * @return [success|fail] (bool)
-     */
-    /* public function prepend($key, $value, $exptime) { */
-    /*     /\* $result = rmc_prepend($key, $value, $exptime); *\/ */
-    /*     /\* return ($result == RomaClient::STORED ? True : False); *\/ */
-    /*   throw new Exception("Not implements !"); */
-    /* } */
-    
-    /**
-     * delete value.
-     * @param key             (string)
-     * @return [success|fail] (bool)
-     */
-    /* public function delete($key) { */
-    /*     /\* $result = rmc_delete($key); *\/ */
-    /*     /\* return ($result == RomaClient::DELETED ? True : False); *\/ */
-    /*   throw new Exception("Not implements !"); */
-    /* } */
     
     //===== plugin - alist =====//
     /**

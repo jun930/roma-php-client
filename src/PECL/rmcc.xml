@@ -268,6 +268,227 @@
    <result>## rmc_set() ##localhost_11211localhost_112120</result>
   </test>
  </function>
+
+ <function name="rmc_add">
+  <proto>int rmc_add(string client_id, string key, string value, int exptime,int timeout)</proto>
+  <code>
+  <![CDATA[
+     typedef std::map<std::string,rakuten::rmcc::RomaClient *> client_map_t;
+     client_map_t *client_map = (client_map_t*)PHPRMCC_G(client_map);
+     client_map_t::iterator it = client_map->find(client_id);
+     if ( it != client_map->end() ) {
+       try {
+         RETURN_LONG(
+           it->second->cmd_add(key,rakuten::rmcc::RomaValue(value,value_len),exptime,timeout);
+         );
+       }catch(const rakuten::Exception & ex ) {
+         // @@@ log...
+       }
+     }
+     RETURN_LONG(rakuten::rmcc::RMC_RET_EXCEPTION);
+  ]]>
+  </code>
+  <test>
+   <code>
+     function callback($buffer)
+     {
+       $fp = fopen("/tmp/test.txt","a+");
+       fwrite($fp,$buffer);
+       fwrite($fp,"\n");
+       fclose($fp);
+       return ($buffer);
+     }
+     ob_start("callback");
+     echo "## rmc_add() ##";
+     rmc_log(100,0);
+     $nl = array();
+     $nl[] = "localhost_11211";
+     $nl[] = "localhost_11212";
+     $cid = rmc_init($nl,1);
+     echo $cid;
+     echo rmc_add($cid,"foobar","FOOBAR",100,1000);
+     ob_end_flush();
+   </code>
+   <result>## rmc_add() ##localhost_11211localhost_112120</result>
+  </test>
+ </function>
+
+ <function name="rmc_replace">
+  <proto>int rmc_replace(string client_id, string key, string value, int exptime,int timeout)</proto>
+  <code>
+  <![CDATA[
+     typedef std::map<std::string,rakuten::rmcc::RomaClient *> client_map_t;
+     client_map_t *client_map = (client_map_t*)PHPRMCC_G(client_map);
+     client_map_t::iterator it = client_map->find(client_id);
+     if ( it != client_map->end() ) {
+       try {
+         RETURN_LONG(
+           it->second->cmd_replace(key,rakuten::rmcc::RomaValue(value,value_len),exptime,timeout);
+         );
+       }catch(const rakuten::Exception & ex ) {
+         // @@@ log...
+       }
+     }
+     RETURN_LONG(rakuten::rmcc::RMC_RET_EXCEPTION);
+  ]]>
+  </code>
+  <test>
+   <code>
+     function callback($buffer)
+     {
+       $fp = fopen("/tmp/test.txt","a+");
+       fwrite($fp,$buffer);
+       fwrite($fp,"\n");
+       fclose($fp);
+       return ($buffer);
+     }
+     ob_start("callback");
+     echo "## rmc_replace() ##";
+     rmc_log(100,0);
+     $nl = array();
+     $nl[] = "localhost_11211";
+     $nl[] = "localhost_11212";
+     $cid = rmc_init($nl,1);
+     echo $cid;
+     echo rmc_replace($cid,"foobar","FOOBAR",100,1000);
+     ob_end_flush();
+   </code>
+   <result>## rmc_replace() ##localhost_11211localhost_112120</result>
+  </test>
+ </function>
+
+ <function name="rmc_append">
+  <proto>int rmc_append(string client_id, string key, string value, int exptime,int timeout)</proto>
+  <code>
+  <![CDATA[
+     typedef std::map<std::string,rakuten::rmcc::RomaClient *> client_map_t;
+     client_map_t *client_map = (client_map_t*)PHPRMCC_G(client_map);
+     client_map_t::iterator it = client_map->find(client_id);
+     if ( it != client_map->end() ) {
+       try {
+         RETURN_LONG(
+           it->second->cmd_append(key,rakuten::rmcc::RomaValue(value,value_len),exptime,timeout);
+         );
+       }catch(const rakuten::Exception & ex ) {
+         // @@@ log...
+       }
+     }
+     RETURN_LONG(rakuten::rmcc::RMC_RET_EXCEPTION);
+  ]]>
+  </code>
+  <test>
+   <code>
+     function callback($buffer)
+     {
+       $fp = fopen("/tmp/test.txt","a+");
+       fwrite($fp,$buffer);
+       fwrite($fp,"\n");
+       fclose($fp);
+       return ($buffer);
+     }
+     ob_start("callback");
+     echo "## rmc_append() ##";
+     rmc_log(100,0);
+     $nl = array();
+     $nl[] = "localhost_11211";
+     $nl[] = "localhost_11212";
+     $cid = rmc_init($nl,1);
+     echo $cid;
+     echo rmc_append($cid,"foobar","FOOBAR",100,1000);
+     ob_end_flush();
+   </code>
+   <result>## rmc_append() ##localhost_11211localhost_112120</result>
+  </test>
+ </function>
+
+ <function name="rmc_prepend">
+  <proto>int rmc_prepend(string client_id, string key, string value, int exptime,int timeout)</proto>
+  <code>
+  <![CDATA[
+     typedef std::map<std::string,rakuten::rmcc::RomaClient *> client_map_t;
+     client_map_t *client_map = (client_map_t*)PHPRMCC_G(client_map);
+     client_map_t::iterator it = client_map->find(client_id);
+     if ( it != client_map->end() ) {
+       try {
+         RETURN_LONG(
+           it->second->cmd_prepend(key,rakuten::rmcc::RomaValue(value,value_len),exptime,timeout);
+         );
+       }catch(const rakuten::Exception & ex ) {
+         // @@@ log...
+       }
+     }
+     RETURN_LONG(rakuten::rmcc::RMC_RET_EXCEPTION);
+  ]]>
+  </code>
+  <test>
+   <code>
+     function callback($buffer)
+     {
+       $fp = fopen("/tmp/test.txt","a+");
+       fwrite($fp,$buffer);
+       fwrite($fp,"\n");
+       fclose($fp);
+       return ($buffer);
+     }
+     ob_start("callback");
+     echo "## rmc_prepend() ##";
+     rmc_log(100,0);
+     $nl = array();
+     $nl[] = "localhost_11211";
+     $nl[] = "localhost_11212";
+     $cid = rmc_init($nl,1);
+     echo $cid;
+     echo rmc_prepend($cid,"foobar","FOOBAR",100,1000);
+     ob_end_flush();
+   </code>
+   <result>## rmc_prepend() ##localhost_11211localhost_112120</result>
+  </test>
+ </function>
+
+ <function name="rmc_cas">
+  <proto>int rmc_cas(string client_id, string key, string value, int exptime,int cas, int timeout)</proto>
+  <code>
+  <![CDATA[
+     typedef std::map<std::string,rakuten::rmcc::RomaClient *> client_map_t;
+     client_map_t *client_map = (client_map_t*)PHPRMCC_G(client_map);
+     client_map_t::iterator it = client_map->find(client_id);
+     if ( it != client_map->end() ) {
+       try {
+         RETURN_LONG(
+           it->second->cmd_cas(key,rakuten::rmcc::RomaValue(value,value_len),exptime,cas,timeout);
+         );
+       }catch(const rakuten::Exception & ex ) {
+         // @@@ log...
+       }
+     }
+     RETURN_LONG(rakuten::rmcc::RMC_RET_EXCEPTION);
+  ]]>
+  </code>
+  <test>
+   <code>
+     function callback($buffer)
+     {
+       $fp = fopen("/tmp/test.txt","a+");
+       fwrite($fp,$buffer);
+       fwrite($fp,"\n");
+       fclose($fp);
+       return ($buffer);
+     }
+     ob_start("callback");
+     echo "## rmc_cas() ##";
+     rmc_log(100,0);
+     $nl = array();
+     $nl[] = "localhost_11211";
+     $nl[] = "localhost_11212";
+     $cid = rmc_init($nl,1);
+     echo $cid;
+     echo rmc_cas($cid,"foobar","FOOBAR",100,1,1000);
+     ob_end_flush();
+   </code>
+   <result>## rmc_cas() ##localhost_11211localhost_112120</result>
+  </test>
+ </function>
+
  <function name="rmc_delete">
   <proto>int rmc_delete(string client_id, string key, int timeout)</proto>
   <code>
@@ -311,6 +532,95 @@
    <result>## rmc_delete() ##localhost_11211localhost_112120</result>
   </test>
  </function>
+
+ <function name="rmc_incr">
+  <proto>int rmc_incr(string client_id, string key, int param, int timeout)</proto>
+  <code>
+  <![CDATA[
+     typedef std::map<std::string,rakuten::rmcc::RomaClient *> client_map_t;
+     client_map_t *client_map = (client_map_t*)PHPRMCC_G(client_map);
+     client_map_t::iterator it = client_map->find(client_id);
+     if ( it != client_map->end() ) {
+       try {
+         RETURN_LONG(
+           it->second->cmd_incr(key, param, timeout);
+         );
+       }catch(const rakuten::Exception & ex ) {
+         // @@@ log...
+       }
+     }
+     RETURN_LONG(rakuten::rmcc::RMC_RET_EXCEPTION);
+  ]]>
+  </code>
+  <test>
+   <code>
+     function callback($buffer)
+     {
+       $fp = fopen("/tmp/test.txt","a+");
+       fwrite($fp,$buffer);
+       fwrite($fp,"\n");
+       fclose($fp);
+       return ($buffer);
+     }
+     ob_start("callback");
+     echo "## rmc_incr() ##";
+     rmc_log(100,0);
+     $nl = array();
+     $nl[] = "localhost_11211";
+     $nl[] = "localhost_11212";
+     $cid = rmc_init($nl,1);
+     echo $cid;
+     echo rmc_incr($cid,"foobar",1,1000);
+     ob_end_flush();
+   </code>
+   <result>## rmc_incr() ##localhost_11211localhost_112120</result>
+  </test>
+ </function>
+
+ <function name="rmc_decr">
+  <proto>int rmc_incr(string client_id, string key, int param, int timeout)</proto>
+  <code>
+  <![CDATA[
+     typedef std::map<std::string,rakuten::rmcc::RomaClient *> client_map_t;
+     client_map_t *client_map = (client_map_t*)PHPRMCC_G(client_map);
+     client_map_t::iterator it = client_map->find(client_id);
+     if ( it != client_map->end() ) {
+       try {
+         RETURN_LONG(
+           it->second->cmd_decr(key, param, timeout);
+         );
+       }catch(const rakuten::Exception & ex ) {
+         // @@@ log...
+       }
+     }
+     RETURN_LONG(rakuten::rmcc::RMC_RET_EXCEPTION);
+  ]]>
+  </code>
+  <test>
+   <code>
+     function callback($buffer)
+     {
+       $fp = fopen("/tmp/test.txt","a+");
+       fwrite($fp,$buffer);
+       fwrite($fp,"\n");
+       fclose($fp);
+       return ($buffer);
+     }
+     ob_start("callback");
+     echo "## rmc_decr() ##";
+     rmc_log(100,0);
+     $nl = array();
+     $nl[] = "localhost_11211";
+     $nl[] = "localhost_11212";
+     $cid = rmc_init($nl,1);
+     echo $cid;
+     echo rmc_decr($cid,"foobar",1,1000);
+     ob_end_flush();
+   </code>
+   <result>## rmc_decr() ##localhost_11211localhost_112120</result>
+  </test>
+ </function>
+
  <function name="rmc_get">
   <proto>array rmc_get(string client_id, string key,int timeout)</proto>
   <code>
