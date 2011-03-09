@@ -31,10 +31,28 @@ public:
   void testSetEmpKey();
   void testSetEmpValue();
 
+  void testAdd();
+  void testAddNotStored();
+
+  void testReplace();
+  void testReplaceNotStored();
+
+  void testAppend();
+  void testAppendNotStored();
+
+  void testPrepend();
+  void testPrependNotStored();
+
   void testDelete();
   void testDeleteNotfound();
   void testDeleteInvKey();
   void testDeleteEmpKey();
+
+  void testIncr();
+  void testIncrNotFound();
+
+  void testDecr();
+  void testDecrNotFound();
 
   void testGet();
   void testGetNotfound();

@@ -236,6 +236,165 @@ void NormalTest::testDeleteEmpKey() {
     // CPPUNIT_FAIL("Should throw !");
   // }catch(const Exception & ex){
   // }
+
+void NormalTest::testAdd() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try{
+    rmc_ret_t ret = client.cmd_delete("foo4",TIMEOUT); // DELETED
+    ret = client.cmd_add("foo4",RomaValue("bbbb",4),100,TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(RMC_RET_OK,ret);
+
+    RomaValue v = client.cmd_get("foo4",TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL((long)4,v.length);
+    CPPUNIT_ASSERT_EQUAL(string("bbbb"),string(v.data));
+  }catch(const Exception & ex){
+    CPPUNIT_FAIL("Unexpected exception !");
+  }
+}
+void NormalTest::testAddNotStored()
+{
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try{
+    rmc_ret_t ret = client.cmd_add("foo4",RomaValue("bbbb",4),100,TIMEOUT); // NOT_STORED
+    CPPUNIT_ASSERT_EQUAL(RMC_RET_ERROR,ret);
+
+    RomaValue v = client.cmd_get("foo4",TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL((long)4,v.length);
+    CPPUNIT_ASSERT_EQUAL(string("aaaa"),string(v.data));
+  }catch(const Exception & ex){
+    CPPUNIT_FAIL("Unexpected exception !");
+  }
+}
+
+void NormalTest::testReplace() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try{
+    rmc_ret_t ret = client.cmd_replace("foo4",RomaValue("bbbb",4),100,TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(RMC_RET_OK,ret);
+
+    RomaValue v = client.cmd_get("foo4",TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL((long)4,v.length);
+    CPPUNIT_ASSERT_EQUAL(string("bbbb"),string(v.data));
+  }catch(const Exception & ex){
+    CPPUNIT_FAIL("Unexpected exception !");
+  }  
+}
+void NormalTest::testReplaceNotStored() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try{
+    rmc_ret_t ret = client.cmd_delete("foo4",TIMEOUT); // DELETED
+    ret = client.cmd_replace("foo4",RomaValue("bbbb",4),100,TIMEOUT); // NOT_STORED
+    CPPUNIT_ASSERT_EQUAL(RMC_RET_ERROR,ret);
+
+    RomaValue v = client.cmd_get("foo4",TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL((long)-1,v.length);
+  }catch(const Exception & ex){
+    CPPUNIT_FAIL("Unexpected exception !");
+  }  
+}
+
+void NormalTest::testAppend() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try{
+    rmc_ret_t ret = client.cmd_append("foo4",RomaValue("bbbb",4),100,TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(RMC_RET_OK,ret);
+
+    RomaValue v = client.cmd_get("foo4",TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL((long)8,v.length);
+    CPPUNIT_ASSERT_EQUAL(string("aaaabbbb"),string(v.data));
+  }catch(const Exception & ex){
+    CPPUNIT_FAIL("Unexpected exception !");
+  }  
+}
+void NormalTest::testAppendNotStored() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try{
+    rmc_ret_t ret = client.cmd_delete("foo4",TIMEOUT); // DELETED
+    ret = client.cmd_append("foo4",RomaValue("bbbb",4),100,TIMEOUT); // NOT_STORED
+    CPPUNIT_ASSERT_EQUAL(RMC_RET_ERROR,ret);
+
+    RomaValue v = client.cmd_get("foo4",TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL((long)-1,v.length);
+  }catch(const Exception & ex){
+    CPPUNIT_FAIL("Unexpected exception !");
+  }  
+}
+
+void NormalTest::testPrepend() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try{
+    rmc_ret_t ret = client.cmd_prepend("foo4",RomaValue("bbbb",4),100,TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(RMC_RET_OK,ret);
+
+    RomaValue v = client.cmd_get("foo4",TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL((long)8,v.length);
+    CPPUNIT_ASSERT_EQUAL(string("bbbbaaaa"),string(v.data));
+  }catch(const Exception & ex){
+    CPPUNIT_FAIL("Unexpected exception !");
+  }  
+}
+void NormalTest::testPrependNotStored() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try{
+    rmc_ret_t ret = client.cmd_delete("foo4",TIMEOUT); // DELETED
+    ret = client.cmd_prepend("foo4",RomaValue("bbbb",4),100,TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(RMC_RET_ERROR,ret);
+
+    RomaValue v = client.cmd_get("foo4",TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL((long)-1,v.length);
+  }catch(const Exception & ex){
+    CPPUNIT_FAIL("Unexpected exception !");
+  }  
+}
+
+void NormalTest::testIncr() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try{
+    client.cmd_store("incr",RomaValue("1",1),100,TIMEOUT);
+    rmc_ret_t ret = client.cmd_incr("incr",1,TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(2,ret);
+    ret = client.cmd_incr("incr",2,TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(4,ret);
+  }catch(const Exception & ex){
+    CPPUNIT_FAIL("Unexpected exception !");
+  }
+}
+void NormalTest::testIncrNotFound() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try{
+    client.cmd_delete("incr",TIMEOUT);
+    rmc_ret_t ret = client.cmd_incr("incr",1,TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(-1,ret);
+  }catch(const Exception & ex){
+    CPPUNIT_FAIL("Unexpected exception !");
+  }
+}
+
+void NormalTest::testDecr() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try{
+    client.cmd_store("decr",RomaValue("4",1),100,TIMEOUT);
+    rmc_ret_t ret = client.cmd_decr("decr",1,TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(3,ret);
+    ret = client.cmd_decr("decr",2,TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(1,ret);
+    ret = client.cmd_decr("decr",2,TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(0,ret);
+  }catch(const Exception & ex){
+    CPPUNIT_FAIL("Unexpected exception !");
+  }
+}
+void NormalTest::testDecrNotFound() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try{
+    client.cmd_delete("decr",TIMEOUT);
+    rmc_ret_t ret = client.cmd_decr("decr",1,TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(-1,ret);
+  }catch(const Exception & ex){
+    CPPUNIT_FAIL("Unexpected exception !");
+  }
+}
+
 void NormalTest::testGet() {
   cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
   try {
@@ -707,6 +866,24 @@ struct GetSuite {
     suite->addTest(new CppUnit::TestCaller<TEST>("testAlistDeleteAtNotfoundError",&TEST::testAlistDeleteAtNotfoundError));
     suite->addTest(new CppUnit::TestCaller<TEST>("testAlistDeleteAtInvKey",&TEST::testAlistDeleteAtInvKey));
     suite->addTest(new CppUnit::TestCaller<TEST>("testAlistDeleteAtEmpKey",&TEST::testAlistDeleteAtEmpKey));
+
+    suite->addTest(new CppUnit::TestCaller<TEST>("testAdd",&TEST::testAdd));
+    suite->addTest(new CppUnit::TestCaller<TEST>("testAddNotStored",&TEST::testAddNotStored));
+
+    suite->addTest(new CppUnit::TestCaller<TEST>("testReplace",&TEST::testReplace));
+    suite->addTest(new CppUnit::TestCaller<TEST>("testReplaceNotStored",&TEST::testReplaceNotStored));
+
+    suite->addTest(new CppUnit::TestCaller<TEST>("testAppend",&TEST::testAppend));
+    suite->addTest(new CppUnit::TestCaller<TEST>("testAppendNotStored",&TEST::testAppendNotStored));
+
+    suite->addTest(new CppUnit::TestCaller<TEST>("testAppend",&TEST::testPrepend));
+    suite->addTest(new CppUnit::TestCaller<TEST>("testAppendNotStored",&TEST::testPrependNotStored));
+
+    suite->addTest(new CppUnit::TestCaller<TEST>("testIncr",&TEST::testIncr));
+    suite->addTest(new CppUnit::TestCaller<TEST>("testIncrNotFound",&TEST::testIncrNotFound));
+
+    suite->addTest(new CppUnit::TestCaller<TEST>("testDecr",&TEST::testDecr));
+    suite->addTest(new CppUnit::TestCaller<TEST>("testDecrNotFound",&TEST::testDecrNotFound));
     return suite;
   }
 };
