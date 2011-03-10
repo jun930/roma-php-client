@@ -357,6 +357,8 @@ namespace rakuten {
     callback_ret_t CmdIncr::recv_callback_bin(string_vbuffer &rbuf){return RECV_OVER;}
     callback_ret_t CmdIncr::recv_callback_line(char * line) {
       if ( strcmp("NOT_FOUND",line) == 0 ){
+      }else if ( strncmp("SERVER_ERROR",line,12) == 0){
+	Exception::throw_exception(0, EXP_PRE_MSG,"%s",line);
       }else{
 	this->roma_ret = RMC_RET_OK;
 	this->value = atoi(line);
@@ -380,6 +382,8 @@ namespace rakuten {
     callback_ret_t CmdDecr::recv_callback_bin(string_vbuffer &rbuf){return RECV_OVER;}
     callback_ret_t CmdDecr::recv_callback_line(char * line) {
       if ( strcmp("NOT_FOUND",line) == 0 ){
+      }else if ( strncmp("SERVER_ERROR",line,12) == 0){
+	Exception::throw_exception(0, EXP_PRE_MSG,"%s",line);
       }else{
 	this->roma_ret = RMC_RET_OK;
 	this->value = atoi(line);
@@ -586,5 +590,77 @@ namespace rakuten {
       return RECV_OVER;
     }
 
+    CmdAlistClear::CmdAlistClear(const char * key,long timeout)
+      :CmdKeyedOne(NRCVDEF,timeout,key){
+    }
+    void CmdAlistClear::prepare(){
+      this->CmdKeyedOne::prepare();
+      sbuf.append_sprintf("alist_clear %s\r\n",key);
+    }
+    string_vbuffer & CmdAlistClear::send_callback(){
+      TRACE_LOG("%s",__PRETTY_FUNCTION__);
+      return sbuf;
+    }
+    callback_ret_t CmdAlistClear::recv_callback_bin(string_vbuffer &rbuf){return RECV_OVER;}
+    callback_ret_t CmdAlistClear::recv_callback_line(char * line) {
+      if ( strcmp("CLEARED",line) == 0 ){
+        this->roma_ret = RMC_RET_OK;
+      }else if ( strcmp("NOT_CLEARED",line) == 0 ){
+      }else if ( strcmp("NOT_FOUND",line) == 0 ){
+      }else {
+	Exception::throw_exception(0, EXP_PRE_MSG,"%s",line);
+      }
+      return RECV_OVER;
+    }
+
+    CmdAlistLength::CmdAlistLength(const char * key,long timeout)
+      :CmdKeyedOne(NRCVDEF,timeout,key){
+    }
+    void CmdAlistLength::prepare(){
+      this->CmdKeyedOne::prepare();
+      sbuf.append_sprintf("alist_length %s\r\n",key);
+    }
+    string_vbuffer & CmdAlistLength::send_callback(){
+      TRACE_LOG("%s",__PRETTY_FUNCTION__);
+      return sbuf;
+    }
+    callback_ret_t CmdAlistLength::recv_callback_bin(string_vbuffer &rbuf){return RECV_OVER;}
+    callback_ret_t CmdAlistLength::recv_callback_line(char * line) {
+      if ( strcmp("NOT_FOUND",line) == 0 ){
+      }else if ( strncmp("SERVER_ERROR",line,12) == 0){
+	Exception::throw_exception(0, EXP_PRE_MSG,"%s",line);
+      }else {
+	this->roma_ret = RMC_RET_OK;
+	this->length = atoi(line);
+      }
+      return RECV_OVER;
+    }
+    
+    CmdAlistUpdateAt::CmdAlistUpdateAt(const char * key,int index,const char *data, long length,long timeout)
+      :CmdKeyedOne(NRCVDEF,timeout,key),
+       index(index),data(data),length(length)
+    {
+    }
+    void CmdAlistUpdateAt::prepare(){
+      this->CmdKeyedOne::prepare();
+      sbuf.append_sprintf("alist_update_at %s %d %ld\r\n",key,index,length);
+      sbuf.append(data,length);
+      sbuf.append("\r\n",2);
+    }
+    string_vbuffer & CmdAlistUpdateAt::send_callback(){
+      TRACE_LOG("%s",__PRETTY_FUNCTION__);
+      return sbuf;
+    }
+    callback_ret_t CmdAlistUpdateAt::recv_callback_bin(string_vbuffer &rbuf){return RECV_OVER;}
+    callback_ret_t CmdAlistUpdateAt::recv_callback_line(char * line) {
+      if ( strcmp("STORED",line) == 0 ) {
+        this->roma_ret = RMC_RET_OK;
+      }else if ( strcmp("NOT_STORED",line) == 0 ) {
+      }else if ( strcmp("NOT_FOUND",line) == 0 ) {
+      }else {
+        Exception::throw_exception(0, EXP_PRE_MSG,"%s",line);
+      }
+      return RECV_OVER;
+    }
   }
 }

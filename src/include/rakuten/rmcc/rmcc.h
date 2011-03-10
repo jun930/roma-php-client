@@ -185,6 +185,39 @@ namespace rakuten {
        * @throws Exception Around network error or SERVER_ERROR returns. It'll be set the error message.
        */
       rmc_ret_t cmd_alist_delete_at(const char *key,int pos,long timeout);
+      /**
+       * @brief Issue ALIST_CLEAR command.
+       *
+       * @param key Specify the key.
+       * @param timeout Specify the timeout(msec).
+       *
+       * @return On success RMC_RET_OK returnd, On error, RMC_RET_ERROR returnd, and call rmc_geterr() to get message.
+       * @throws Exception Around network error or SERVER_ERROR returns. It'll be set the error message.
+       */
+      rmc_ret_t cmd_alist_clear(const char *key,long timeout);
+      /**
+       * @brief Issue ALIST_LANGTH command.
+       *
+       * @param key Specify the key.
+       * @param timeout Specify the timeout(msec).
+       *
+       * @return On success length of a list, other than -1.
+       * @throws Exception Around network error or SERVER_ERROR returns.
+       */
+      rmc_ret_t cmd_alist_length(const char *key,long timeout);
+      /**
+       * @brief Issue ALIST_UPDATE_AT command.
+       *
+       * @param key Specify the key.
+       * @param index Specify the index of a ALIST.
+       * @param value Specify the value in the ALIST.
+       * @param timeout Specify the timeout(msec).
+       *
+       * @return On success RMC_RET_OK returnd, On error, RMC_RET_ERROR returnd, and call rmc_geterr() to get message.
+       * @throws Exception Around network error or SERVER_ERROR returns. It'll be set the error message.
+       */
+      rmc_ret_t cmd_alist_update_at(const char * key,int index,RomaValue value,long timeout);
+
     };
   }
 }

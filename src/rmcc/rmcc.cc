@@ -232,5 +232,44 @@ namespace rakuten{
         throw;
       }
     }
+    rmc_ret_t RomaClient::cmd_alist_clear(const char *key,long timeout){
+      try {
+	CmdAlistClear cmd(key,timeout);
+	cmd.prepare();
+        this->conn.command(cmd);
+        return cmd.roma_ret;
+      }catch(const Exception & ex ) {
+        ERR_LOG(ex.get_msg());
+        this->lasterr << ex.get_func() << ":" << ex.get_line() << ":" << ex.get_msg();
+        throw;
+      }
+    }
+    rmc_ret_t RomaClient::cmd_alist_length(const char *key,long timeout){
+      try {
+	CmdAlistLength cmd(key,timeout);
+	cmd.prepare();
+	this->conn.command(cmd);
+	if(cmd.roma_ret == RMC_RET_ERROR)
+          return -1;
+	return cmd.length;
+      }catch(const Exception & ex ) {
+        ERR_LOG(ex.get_msg());
+        this->lasterr << ex.get_func() << ":" << ex.get_line() << ":" << ex.get_msg();
+        throw;
+      }
+    }
+    rmc_ret_t RomaClient::cmd_alist_update_at(const char * key,int index,RomaValue value,long timeout){
+      try {
+	CmdAlistUpdateAt cmd(key,index,value.data,value.length,timeout);
+	cmd.prepare();
+        this->conn.command(cmd);
+        return cmd.roma_ret;
+      }catch(const Exception & ex ) {
+        ERR_LOG(ex.get_msg());
+        this->lasterr << ex.get_func() << ":" << ex.get_line() << ":" << ex.get_msg();
+        throw;
+      }
+	
+    }
   }
 }

@@ -262,6 +262,39 @@ namespace rakuten {
       virtual callback_ret_t recv_callback_bin(string_vbuffer &rbuf);
     };
 
+    class CmdAlistClear: public CmdKeyedOne {
+      string_vbuffer sbuf;
+    public:
+      CmdAlistClear(const char * key,long timeout);
+      virtual void prepare();
+      virtual string_vbuffer & send_callback();
+      virtual callback_ret_t recv_callback_line(char *line);
+      virtual callback_ret_t recv_callback_bin(string_vbuffer &rbuf);
+    };
+
+    class CmdAlistLength: public CmdKeyedOne {
+      string_vbuffer sbuf;
+    public:
+      int length;
+      CmdAlistLength(const char * key,long timeout);
+      virtual void prepare();
+      virtual string_vbuffer & send_callback();
+      virtual callback_ret_t recv_callback_line(char *line);
+      virtual callback_ret_t recv_callback_bin(string_vbuffer &rbuf);      
+    };
+
+    class CmdAlistUpdateAt: public CmdKeyedOne {
+      string_vbuffer sbuf;
+      int index;
+      const char *data;
+      const long length;
+    public:
+      CmdAlistUpdateAt(const char * key,int index,const char *data, long length,long timeout);
+      virtual void prepare();
+      virtual string_vbuffer & send_callback();
+      virtual callback_ret_t recv_callback_line(char *line);
+      virtual callback_ret_t recv_callback_bin(string_vbuffer &rbuf);      
+    };
   }
 }
 
