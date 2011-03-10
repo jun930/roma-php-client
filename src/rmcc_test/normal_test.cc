@@ -814,11 +814,79 @@ void NormalTest::testAlistDeleteAtEmpKey() {
   }
 }
 
+void NormalTest::testAlistClear() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try {
+    rmc_ret_t ret = client.cmd_alist_clear("FOO",TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(RMC_RET_OK,ret);
+    
+    RomaValue v = client.cmd_alist_join("FOO",",",TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL((long)0,v.length);
+  }catch(const Exception & ex){
+    CPPUNIT_FAIL("Unexpected exception !");
+  }
+}
+void NormalTest::testAlistClearNotFound() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try {
+    rmc_ret_t ret = client.cmd_alist_clear("NOT_FOUND",TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(RMC_RET_ERROR,ret);
+  }catch(const Exception & ex){
+    CPPUNIT_FAIL("Unexpected exception !");
+  }
+}
+
+void NormalTest::testAlistLength() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try {
+    rmc_ret_t ret = client.cmd_alist_length("FOO",TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(2,ret);
+  }catch(const Exception & ex){
+    CPPUNIT_FAIL("Unexpected exception !");
+  }
+}
+void NormalTest::testAlistLengthNotFound() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try {
+    rmc_ret_t ret = client.cmd_alist_length("NOT_FOUND",TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(-1,ret);
+  }catch(const Exception & ex){
+    CPPUNIT_FAIL("Unexpected exception !");
+  }
+}
+
+void NormalTest::testAlistUpdateAt() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try {
+    rmc_ret_t ret = client.cmd_alist_update_at("FOO",0,RomaValue("ZZZ",3),TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(RMC_RET_OK,ret);
+    RomaValue v = client.cmd_alist_join("FOO",",",TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(string("ZZZ,aaa"),string(v.data));
+    ret = client.cmd_alist_update_at("FOO",1,RomaValue("QQQ",3),TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(RMC_RET_OK,ret);
+    v = client.cmd_alist_join("FOO",",",TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(string("ZZZ,QQQ"),string(v.data));
+  }catch(const Exception & ex){
+    CPPUNIT_FAIL("Unexpected exception !");
+  }
+}
+void NormalTest::testAlistUpdateAtNotFound() {
+  cerr << "*TEST* " << __PRETTY_FUNCTION__ << " (" << typeid(*this).name() << ")" << endl;
+  try {
+    rmc_ret_t ret = client.cmd_alist_update_at("NOT_FOUND",0,RomaValue("ZZZ",3),TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(RMC_RET_ERROR,ret);
+    ret = client.cmd_alist_update_at("FOO",3,RomaValue("QQQ",3),TIMEOUT);
+    CPPUNIT_ASSERT_EQUAL(RMC_RET_ERROR,ret);
+  }catch(const Exception & ex){
+    CPPUNIT_FAIL("Unexpected exception !");
+  }
+}
 
 template<class TEST>
 struct GetSuite {
   CppUnit::TestSuite * operator()() const{
     CppUnit::TestSuite *suite = new CppUnit::TestSuite();
+    
     suite->addTest(new CppUnit::TestCaller<TEST>("testUnknownServer",&TEST::testUnknownServer));
     suite->addTest(new CppUnit::TestCaller<TEST>("testConnectFailed",&TEST::testConnectFailed));
 
@@ -884,6 +952,16 @@ struct GetSuite {
 
     suite->addTest(new CppUnit::TestCaller<TEST>("testDecr",&TEST::testDecr));
     suite->addTest(new CppUnit::TestCaller<TEST>("testDecrNotFound",&TEST::testDecrNotFound));
+
+    suite->addTest(new CppUnit::TestCaller<TEST>("testAlistClear",&TEST::testAlistClear));
+    suite->addTest(new CppUnit::TestCaller<TEST>("testAlistClearNotFound",&TEST::testAlistClearNotFound));
+    
+    suite->addTest(new CppUnit::TestCaller<TEST>("testAlistLength",&TEST::testAlistLength));
+    suite->addTest(new CppUnit::TestCaller<TEST>("testAlistLengthNotFound",&TEST::testAlistLengthNotFound));
+
+    suite->addTest(new CppUnit::TestCaller<TEST>("testAlistUpdateAt",&TEST::testAlistUpdateAt));
+    suite->addTest(new CppUnit::TestCaller<TEST>("testAlistUpdateAtNotFound",&TEST::testAlistUpdateAtNotFound));
+
     return suite;
   }
 };

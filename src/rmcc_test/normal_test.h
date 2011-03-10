@@ -86,6 +86,15 @@ public:
   void testAlistDeleteAtNotfoundError();
   void testAlistDeleteAtInvKey();
   void testAlistDeleteAtEmpKey();
+
+  void testAlistClear();
+  void testAlistClearNotFound();
+
+  void testAlistLength();
+  void testAlistLengthNotFound();
+  
+  void testAlistUpdateAt();
+  void testAlistUpdateAtNotFound();
 };
 class NormalTest0 : public NormalTest {
 public:
