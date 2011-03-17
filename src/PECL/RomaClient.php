@@ -25,7 +25,16 @@ class RomaClient {
     private function __construct($cid) {
       $this->client_id = $cid;
     }
-    
+
+    /**
+     * @brief Destructor
+     *
+     */
+    private function __destruct() {
+      // Instance cache
+      // rmc_term($this->client_id);
+    }
+
     /**
      * @brief Get roma-client instance.
      * <pre>
@@ -60,6 +69,7 @@ class RomaClient {
     public function set_default_timeout($timeout) {
       $this->default_timeout = $timeout;
     }
+
     /**
      * @brief Get value.(Issue 'get' command).
      * @param key 
@@ -225,13 +235,18 @@ class RomaClient {
     }
 
     /**
-     * destructor.
-     * 
+     * @brief Gets value.(Issue 'gets' command).
+     * @param key
+     * @return On success new value of the item's data, other than -1.
      */
-    public function __destruct() {
-      // Instance cache.
-      // rmc_term($this->client_id);
+    public function gets($key) {
+      $result = rmc_gets($this->client_id, $key, $this->default_timeout);
+      if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
+        throw new Exception("rmc_gets() failure");
+      }
+      return $result;
     }
+
     /**
      * @brief ALIST operation. (Issue 'alist_sized_insert' command)
      * @param key
@@ -291,6 +306,7 @@ class RomaClient {
       }
       return True;
     }
+
     /**
      * @brief ALIST operation. (Issue 'alist_delete_at' command)
      * @param key
@@ -302,14 +318,57 @@ class RomaClient {
       if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
         throw new Exception("rmc_alist_delete_at() failure");
       }else if ( $result == RomaClient::RMC_RET_ERROR ) {
-	return False;
+        return False;
       }
 
       return True;
     }
+
+    /**
+     * @brief ALIST operation. (Issue 'alist_clear' command)
+     * @param key
+     * @return Returns True if success.
+     */
+    public function alist_clear($key) {
+      $result = rmc_alist_clear($this->client,$key,$this->default_timeout);
+      if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
+        throw new Exception("rmc_alist_clear() failure");
+      }else if( $result == RomaClient::RMC_RET_ERROR ) {
+        return False;
+      }
+      return True;
+    }
+    /**
+     * @brief ALIST operation. (Issue 'alist_length' command)
+     * @param key
+     * @return On success new value of the item's data, other than -1.
+     */
+    public function alist_length($key) {
+      $result = rmc_alist_length($this->client,$key,$this->default_timeout);
+      if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
+        throw new Exception("rmc_alist_length() failure");
+      }
+      return $result;
+    }
+
+    /**
+     * @brief ALIST operation. (Issue 'alist_update_at' command)
+     * @param key
+     * @param index
+     * @param value
+     * @return Retuens True if sccess.
+     */
+    public function alist_update_at($key, $index, $value) {
+      $result = rmc_alist_update_at($this->client,$key,$index,$value,$this->default_timeout);
+      if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
+        throw new Exception("rmc_alist_update_at() failure");
+      }else if( $result == RomaClient::RMC_RET_ERROR ) {
+        return False;
+      }
+      return True;
+    }
 }
 
-    
     //===== plugin - alist =====//
     /**
      * alist at.
@@ -322,18 +381,6 @@ class RomaClient {
     /*     /\* return $result; *\/ */
     /*   throw new Exception("Not implements !"); */
     /* } */
-
-    /**
-     * alist clear.
-     * @param key (string)
-     * @return status
-     */
-    /* public function alist_clear($key) { */
-    /*     /\* $result = rmc_alist_clear($key); *\/ */
-    /*     /\* return ($result == RomaClient::CLEARED ? True : False); *\/ */
-    /*   throw new Exception("Not implements !"); */
-    /* } */
-
 
     /**
      * alist empty ?
@@ -412,17 +459,6 @@ class RomaClient {
      */
     /* public function alist_last($key) { */
     /*     /\* $result = rmc_alist_last($key); *\/ */
-    /*     /\* return $result; *\/ */
-    /*   throw new Exception("Not implements !"); */
-    /* } */
-
-    /**
-     * alist length.
-     * @param key (string)
-     * @return length/status
-     */
-    /* public function alist_length($key) { */
-    /*     /\* $result = rmc_alist_length($key); *\/ */
     /*     /\* return $result; *\/ */
     /*   throw new Exception("Not implements !"); */
     /* } */
