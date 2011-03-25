@@ -348,7 +348,7 @@ class RomaClient {
       if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
         throw new Exception("rmc_alist_length() failure");
       }
-      return $result;
+      return $result[2];
     }
 
     /**
