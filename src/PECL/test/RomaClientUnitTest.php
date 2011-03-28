@@ -204,6 +204,10 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
     $this->assertFalse($ret);
   }
 
+  /**
+   * No.16
+   * No.31
+   */
   public function testDelete()
   {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
@@ -211,10 +215,344 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
     $this->assertTrue($ret);
   }
 
+  /**
+   * No.17
+   * No.32
+   */
   public function testDeleteNotDeleted()
   {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
     $ret = $this->roma_client->delete("CMD_NOT_DELETED", 0);
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.18
+   * No.
+   */
+  public function testAdd()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->add("CMD_STORED", "bar", 0);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.19
+   * No.
+   */
+  public function testAddNotStored()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->add("CMD_NOT_STORED", "bar", 0);
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.20
+   * No.
+   */
+  public function testAddNotFound()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->add("CMD_NOT_FOUND", "bar", 0);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.21
+   * No.
+   */
+  public function testReplace()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->replace("CMD_STORED", "bar", 0);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.22
+   * No.
+   */
+  public function testReplaceNotStored()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->replace("CMD_NOT_STORED", "bar", 0);
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.23
+   * No.
+   */
+  public function testReplaceNotFound()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->replace("CMD_NOT_FOUND", "bar", 0);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.24
+   * No.
+   */
+  public function testAppend()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->append("CMD_STORED", "bar", 0);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.25
+   * No.
+   */
+  public function testAppendNotStored()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->append("CMD_NOT_STORED", "bar", 0);
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.26
+   * No.
+   */
+  public function testAppendNotFound()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->append("CMD_NOT_FOUND", "bar", 0);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.27
+   * No.
+   */
+  public function testPrepend()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->prepend("CMD_STORED", "bar", 0);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.28
+   * No.
+   */
+  public function testPrependNotStored()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->prepend("CMD_NOT_STORED", "bar", 0);
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.29
+   * No.
+   */
+  public function testPrependNotFound()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->prepend("CMD_NOT_FOUND", "bar", 0);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.30
+   * No.
+   */
+  public function testCas()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->cas("CMD_STORED", "bar", 0, 0);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.31
+   * No.
+   */
+  public function testCasNotStored()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->cas("CMD_NOT_STORED", "bar", 0, 0);
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.32
+   * No.
+   */
+  public function testCasNotFound()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->cas("CMD_NOT_FOUND", "bar", 0, 0);
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.33
+   * No.
+   */
+  public function testCasExists()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->cas("CMD_EXISTS", "bar", 0, 0);
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.34
+   * No.
+   */
+  public function testIncr()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $val = $this->roma_client->incr("CMD_", 1);
+    $this->assertEquals(10, $val);
+  }
+
+  /**
+   * No.35
+   * No.
+   */
+  public function testIncrNotFound()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $val = $this->roma_client->incr("CMD_NOT_FOUND", 1);
+    $this->assertEquals(-1, $val);
+  }
+
+  /**
+   * No.36
+   * No.
+   */
+  public function testDecr()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $val = $this->roma_client->decr("CMD_", 1);
+    $this->assertEquals(10, $val);
+  }
+
+  /**
+   * No.37
+   * No.
+   */
+  public function testDecrNotFound()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $val = $this->roma_client->decr("CMD_NOT_FOUND", 1);
+    $this->assertEquals(-1, $val);
+  }
+
+  /**
+   * No.38
+   * No.
+   */
+  public function testGets()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $val = $this->roma_client->gets("CMD_");
+    $this->assertEquals(2, $val);
+  }
+
+  /**
+   * No.39
+   * No.
+   */
+  public function testGetsNull()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $val = $this->roma_client->gets("CMD_NULL");
+    $this->assertEquals(-1, $val);
+  }
+
+  /**
+   * No.40
+   * No.
+   */
+  public function testAlistClear()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->alist_clear("CMD_CLEARED");
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.41
+   * No.
+   */
+  public function testAlistClearNotFound()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->alist_clear("CMD_NOT_FOUND");
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.42
+   * No.
+   */
+  public function testAlistClearNotCleared()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->alist_clear("CMD_NOT_CLEARED");
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.43
+   * No.
+   */
+  public function testAlistLength()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $val = $this->roma_client->alist_length("CMD_");
+    $this->assertEquals(10, $val);
+  }
+
+  /**
+   * No.44
+   * No.
+   */
+  public function testAlistLengthNotFound()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $val = $this->roma_client->alist_length("CMD_NOT_FOUND");
+    $this->assertEquals(-1, $val);
+  }
+
+  /**
+   * No.45
+   * No.
+   */
+  public function testAlistUpdateAt()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->alist_update_at("CMD_STORED", 0, "bar");
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.46
+   * No.
+   */
+  public function testAlistUpdateAtNotStored()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->alist_update_at("CMD_NOT_STORED", 0, "bar");
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.47
+   * No.
+   */
+  public function testAlistUpdateAtNotFound()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->alist_update_at("CMD_NOT_FOUND", 0, "bar");
     $this->assertFalse($ret);
   }
 }
