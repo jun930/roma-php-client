@@ -262,7 +262,7 @@
      $nl[] = "localhost_11212";
      $cid = rmc_init($nl,1);
      echo $cid;
-     echo rmc_set($cid,"foobar","FOOBAR",100,1000);
+     echo rmc_set($cid,"rmc_set","FOOBAR",100,1000);
      ob_end_flush();
    </code>
    <result>## rmc_set() ##localhost_11211localhost_112120</result>
@@ -306,7 +306,7 @@
      $nl[] = "localhost_11212";
      $cid = rmc_init($nl,1);
      echo $cid;
-     echo rmc_add($cid,"foobar","FOOBAR",100,1000);
+     echo rmc_add($cid,"rmc_add","FOOBAR",100,1000);
      ob_end_flush();
    </code>
    <result>## rmc_add() ##localhost_11211localhost_112120</result>
@@ -350,10 +350,11 @@
      $nl[] = "localhost_11212";
      $cid = rmc_init($nl,1);
      echo $cid;
-     echo rmc_replace($cid,"foobar","FOOBAR",100,1000);
+     echo rmc_set($cid,"rmc_replace","FOOBAR",100,1000);
+     echo rmc_replace($cid,"rmc_replace","FOOBAR",100,1000);
      ob_end_flush();
    </code>
-   <result>## rmc_replace() ##localhost_11211localhost_112120</result>
+   <result>## rmc_replace() ##localhost_11211localhost_1121200</result>
   </test>
  </function>
 
@@ -394,10 +395,11 @@
      $nl[] = "localhost_11212";
      $cid = rmc_init($nl,1);
      echo $cid;
-     echo rmc_append($cid,"foobar","FOOBAR",100,1000);
+     echo rmc_set($cid,"rmc_append","FOOBAR",100,1000);
+     echo rmc_append($cid,"rmc_append","FOOBAR",100,1000);
      ob_end_flush();
    </code>
-   <result>## rmc_append() ##localhost_11211localhost_112120</result>
+   <result>## rmc_append() ##localhost_11211localhost_1121200</result>
   </test>
  </function>
 
@@ -438,10 +440,11 @@
      $nl[] = "localhost_11212";
      $cid = rmc_init($nl,1);
      echo $cid;
-     echo rmc_prepend($cid,"foobar","FOOBAR",100,1000);
+     echo rmc_set($cid,"rmc_prepend","FOOBAR",100,1000);
+     echo rmc_prepend($cid,"rmc_prepend","FOOBAR",100,1000);
      ob_end_flush();
    </code>
-   <result>## rmc_prepend() ##localhost_11211localhost_112120</result>
+   <result>## rmc_prepend() ##localhost_11211localhost_1121200</result>
   </test>
  </function>
 
@@ -482,10 +485,12 @@
      $nl[] = "localhost_11212";
      $cid = rmc_init($nl,1);
      echo $cid;
-     echo rmc_cas($cid,"foobar","FOOBAR",100,1,1000);
+     echo rmc_set($cid,"rmc_cas","FOOBAR",100,1000);
+     $ret = rmc_gets($cid,"rmc_cas",1000);
+     echo rmc_cas($cid,"rmc_cas","FOOBAR",100,$ret[2],1000);
      ob_end_flush();
    </code>
-   <result>## rmc_cas() ##localhost_11211localhost_112120</result>
+   <result>## rmc_cas() ##localhost_11211localhost_1121200</result>
   </test>
  </function>
 
@@ -526,10 +531,11 @@
      $nl[] = "localhost_11212";
      $cid = rmc_init($nl,1);
      echo $cid;
-     echo rmc_delete($cid,"foobar",1000);
+     echo rmc_set($cid,"rmc_delete","FOOBAR",100,1000);
+     echo rmc_delete($cid,"rmc_delete",1000);
      ob_end_flush();
    </code>
-   <result>## rmc_delete() ##localhost_11211localhost_112120</result>
+   <result>## rmc_delete() ##localhost_11211localhost_1121200</result>
   </test>
  </function>
 
@@ -570,10 +576,11 @@
      $nl[] = "localhost_11212";
      $cid = rmc_init($nl,1);
      echo $cid;
-     echo rmc_incr($cid,"foobar",1,1000);
+     echo rmc_set($cid,"rmc_incr","0",100,1000);
+     echo rmc_incr($cid,"rmc_incr",1,1000);
      ob_end_flush();
    </code>
-   <result>## rmc_incr() ##localhost_11211localhost_112120</result>
+   <result>## rmc_incr() ##localhost_11211localhost_1121201</result>
   </test>
  </function>
 
@@ -614,10 +621,11 @@
      $nl[] = "localhost_11212";
      $cid = rmc_init($nl,1);
      echo $cid;
-     echo rmc_decr($cid,"foobar",1,1000);
+     echo rmc_set($cid,"rmc_decr","1",100,1000);
+     echo rmc_decr($cid,"rmc_decr",1,1000);
      ob_end_flush();
    </code>
-   <result>## rmc_decr() ##localhost_11211localhost_112120</result>
+   <result>## rmc_decr() ##localhost_11211localhost_1121200</result>
   </test>
  </function>
 
@@ -665,8 +673,8 @@
      $nl[] = "localhost_11212";
      $cid = rmc_init($nl,1);
      echo $cid;
-     echo rmc_set($cid,"foobar","FOOBAR",100,1000);
-     $ret = rmc_get($cid,"foobar",1000);
+     echo rmc_set($cid,"rmc_get","FOOBAR",100,1000);
+     $ret = rmc_get($cid,"rmc_get",1000);
      var_dump($ret);
      ob_end_flush();
    </code>
@@ -722,14 +730,14 @@
      $nl[] = "localhost_11212";
      $cid = rmc_init($nl,1);
      echo $cid;
-     echo rmc_alist_sized_insert($cid,"FOOBAR",2,"FOOBAR",1000);
-     echo rmc_alist_sized_insert($cid,"FOOBAR",2,"FOOBAR",1000);
-     echo rmc_alist_sized_insert($cid,"FOOBAR",2,"BARFOO",1000);
+     echo rmc_alist_sized_insert($cid,"rmc_alist_sized_insert",2,"FOOBAR",1000);
+     echo rmc_alist_sized_insert($cid,"rmc_alist_sized_insert",2,"BARFOO",1000);
      ob_end_flush();
    </code>
-   <result>## rmc_alist_sized_insert() ##localhost_11211localhost_11212000</result>
+   <result>## rmc_alist_sized_insert() ##localhost_11211localhost_1121200</result>
   </test>
  </function>
+
  <function name="rmc_alist_join">
   <proto>array rmc_alist_join(string client_id, string key,string sep,int timeout)</proto>
   <code>
@@ -775,10 +783,10 @@
      $nl[] = "localhost_11212";
      $cid = rmc_init($nl,1);
      echo $cid;
-     echo rmc_alist_sized_insert($cid,"FOOBAR",2,"FOOBAR",1000);
-     echo rmc_alist_sized_insert($cid,"FOOBAR",2,"FOOBAR",1000);
-     echo rmc_alist_sized_insert($cid,"FOOBAR",2,"###",1000);
-     $ret = rmc_alist_join($cid,"FOOBAR",",",1000);
+     echo rmc_alist_sized_insert($cid,"rmc_alist_join",2,"FOOBAR",1000);
+     echo rmc_alist_sized_insert($cid,"rmc_alist_join",2,"BARFOO",1000);
+     echo rmc_alist_sized_insert($cid,"rmc_alist_join",2,"FOOFOO",1000);
+     $ret = rmc_alist_join($cid,"rmc_alist_join",",",1000);
      var_dump($ret);
      ob_end_flush();
    </code>
@@ -786,9 +794,9 @@
 <![CDATA[
 ## rmc_alist_join() ##localhost_11211localhost_11212000array(3) {
   [0]=>
-  string(10) "###,FOOBAR"
+  string(13) "FOOFOO,BARFOO"
   [1]=>
-  int(10)
+  int(13)
   [2]=>
   int(-1)
 }
@@ -796,6 +804,7 @@
   </result>
   </test>
  </function>
+
  <function name="rmc_alist_delete">
   <proto>int rmc_alist_delete(string client_id, string key,string value,int timeout)</proto>
   <code>
@@ -833,10 +842,10 @@
      $nl[] = "localhost_11212";
      $cid = rmc_init($nl,1);
      echo $cid;
-     echo rmc_alist_sized_insert($cid,"FOOBAR",2,"FOOBAR",1000);
-     echo rmc_alist_sized_insert($cid,"FOOBAR",2,"BARFOO",1000);
-     echo rmc_alist_delete($cid,"FOOBAR","BARFOO",1000);
-     $ret = rmc_alist_join($cid,"FOOBAR",",",1000);
+     echo rmc_alist_sized_insert($cid,"rmc_alist_delete",2,"FOOBAR",1000);
+     echo rmc_alist_sized_insert($cid,"rmc_alist_delete",2,"BARFOO",1000);
+     echo rmc_alist_delete($cid,"rmc_alist_delete","BARFOO",1000);
+     $ret = rmc_alist_join($cid,"rmc_alist_delete",",",1000);
      var_dump($ret);
      ob_end_flush();
    </code>
@@ -891,10 +900,10 @@
      $nl[] = "localhost_11212";
      $cid = rmc_init($nl,1);
      echo $cid;
-     echo rmc_alist_sized_insert($cid,"FOOBAR",2,"FOOBAR",1000);
-     echo rmc_alist_sized_insert($cid,"FOOBAR",2,"BARFOO",1000);
-     echo rmc_alist_delete_at($cid,"FOOBAR",0,1000);
-     $ret = rmc_alist_join($cid,"FOOBAR",",",1000);
+     echo rmc_alist_sized_insert($cid,"rmc_alist_delete_at",2,"FOOBAR",1000);
+     echo rmc_alist_sized_insert($cid,"rmc_alist_delete_at",2,"BARFOO",1000);
+     echo rmc_alist_delete_at($cid,"rmc_alist_delete_at",0,1000);
+     $ret = rmc_alist_join($cid,"rmc_alist_delete_at",",",1000);
      var_dump($ret);
      ob_end_flush();
    </code>
@@ -910,6 +919,220 @@
 }
 ]]>
    </result>
+  </test>
+ </function>
+
+ <function name="rmc_alist_clear">
+  <proto>int rmc_alist_clear(string client_id, string key, int timeout)</proto>
+  <code>
+  <![CDATA[
+     typedef std::map<std::string,rakuten::rmcc::RomaClient *> client_map_t;
+     client_map_t *client_map = (client_map_t*)PHPRMCC_G(client_map);
+     client_map_t::iterator it = client_map->find(client_id);
+     if ( it != client_map->end() ) {
+       try {
+         RETURN_LONG(
+           it->second->cmd_alist_clear(key,timeout);
+         );
+       }catch(const rakuten::Exception & ex ) {
+         // @@@ log...
+       }
+     }
+     RETURN_LONG(rakuten::rmcc::RMC_RET_EXCEPTION);
+  ]]>
+  </code>
+  <test>
+   <code>
+     function callback($buffer)
+     {
+       $fp = fopen("/tmp/test.txt","a+");
+       fwrite($fp,$buffer);
+       fwrite($fp,"\n");
+       fclose($fp);
+       return ($buffer);
+     }
+     ob_start("callback");
+     echo "## rmc_alist_clear() ##";
+     rmc_log(100,0);
+     $nl = array();
+     $nl[] = "localhost_11211";
+     $nl[] = "localhost_11212";
+     $cid = rmc_init($nl,1);
+     echo $cid;
+     echo rmc_alist_sized_insert($cid,"rmc_alist_clear",1,"FOOBAR",1000);
+     echo rmc_alist_clear($cid,"rmc_alist_clear",1000);
+     echo rmc_alist_length($cid,"rmc_alist_clear",1000);
+     ob_end_flush();
+   </code>
+   <result>## rmc_alist_clear() ##localhost_11211localhost_11212000</result>
+  </test>
+ </function>
+
+ <function name="rmc_alist_length">
+  <proto>int rmc_alist_length(string client_id, string key, int timeout)</proto>
+  <code>
+  <![CDATA[
+     typedef std::map<std::string,rakuten::rmcc::RomaClient *> client_map_t;
+     client_map_t *client_map = (client_map_t*)PHPRMCC_G(client_map);
+     client_map_t::iterator it = client_map->find(client_id);
+     if ( it != client_map->end() ) {
+       try {
+         RETURN_LONG(
+           it->second->cmd_alist_length(key,timeout);
+         );
+       }catch(const rakuten::Exception & ex ) {
+         // @@@ log...
+       }
+     }
+     RETURN_LONG(rakuten::rmcc::RMC_RET_EXCEPTION);
+  ]]>
+  </code>
+  <test>
+   <code>
+     function callback($buffer)
+     {
+       $fp = fopen("/tmp/test.txt","a+");
+       fwrite($fp,$buffer);
+       fwrite($fp,"\n");
+       fclose($fp);
+       return ($buffer);
+     }
+     ob_start("callback");
+     echo "## rmc_alist_length() ##";
+     rmc_log(100,0);
+     $nl = array();
+     $nl[] = "localhost_11211";
+     $nl[] = "localhost_11212";
+     $cid = rmc_init($nl,1);
+     echo $cid;
+     echo rmc_alist_sized_insert($cid,"rmc_alist_sized_insert",2,"FOOBAR",1000);
+     echo rmc_alist_sized_insert($cid,"rmc_alist_sized_insert",2,"BARFOO",1000);
+     echo rmc_alist_length($cid,"rmc_alist_sized_insert",1000);
+     ob_end_flush();
+   </code>
+   <result>## rmc_alist_length() ##localhost_11211localhost_11212002</result>
+  </test>
+ </function>
+
+ <function name="rmc_alist_update_at">
+  <proto>int rmc_alist_update_at(string client_id, string key, int index, string value, int timeout)</proto>
+  <code>
+  <![CDATA[
+     typedef std::map<std::string,rakuten::rmcc::RomaClient *> client_map_t;
+     client_map_t *client_map = (client_map_t*)PHPRMCC_G(client_map);
+     client_map_t::iterator it = client_map->find(client_id);
+     if ( it != client_map->end() ) {
+       try {
+         RETURN_LONG(
+           it->second->cmd_alist_update_at(key,index,rakuten::rmcc::RomaValue(value,value_len),timeout);
+         );
+       }catch(const rakuten::Exception & ex ) {
+         // @@@ log...
+       }
+     }
+     RETURN_LONG(rakuten::rmcc::RMC_RET_EXCEPTION);
+  ]]>
+  </code>
+  <test>
+   <code>
+     function callback($buffer)
+     {
+       $fp = fopen("/tmp/test.txt","a+");
+       fwrite($fp,$buffer);
+       fwrite($fp,"\n");
+       fclose($fp);
+       return ($buffer);
+     }
+     ob_start("callback");
+     echo "## rmc_alist_update_at() ##";
+     rmc_log(100,0);
+     $nl = array();
+     $nl[] = "localhost_11211";
+     $nl[] = "localhost_11212";
+     $cid = rmc_init($nl,1);
+     echo $cid;
+     echo rmc_alist_sized_insert($cid,"rmc_alist_update_at",1,"FOOBAR",1000);
+     echo rmc_alist_update_at($cid,"rmc_alist_update_at",0,"BARFOO",1000);
+     $ret = rmc_alist_join($cid,"rmc_alist_update_at",",",1000);
+     var_dump($ret);
+     ob_end_flush();
+   </code>
+   <result>
+<![CDATA[
+## rmc_alist_update_at() ##localhost_11211localhost_1121200array(3) {
+  [0]=>
+  string(6) "BARFOO"
+  [1]=>
+  int(6)
+  [2]=>
+  int(-1)
+}
+]]>
+   </result>
+  </test>
+ </function>
+
+ <function name="rmc_gets">
+  <proto>array rmc_gets(string client_id, string key,int timeout)</proto>
+  <code>
+  <![CDATA[
+     typedef std::map<std::string,rakuten::rmcc::RomaClient *> client_map_t;
+     client_map_t *client_map = (client_map_t*)PHPRMCC_G(client_map);
+     client_map_t::iterator it = client_map->find(client_id);
+     if ( it != client_map->end() ) {
+       try {
+         rakuten::rmcc::RomaValue v = it->second->cmd_gets(key,timeout);
+         if ( v.length < 0 ) {
+           add_index_stringl(return_value,0,(char*)"",0,1);
+         }else {
+           add_index_stringl(return_value,0,(char*)v.data,v.length,1);
+         }
+         add_index_long(return_value,1,v.length);
+         add_index_long(return_value,2,v.cas);
+       }catch(const rakuten::Exception & ex ) {
+            // @@@ log...
+         RETURN_LONG(rakuten::rmcc::RMC_RET_EXCEPTION);
+       }
+     } else {
+       RETURN_LONG(rakuten::rmcc::RMC_RET_EXCEPTION);
+     }
+  ]]>
+  </code>
+  <test>
+   <code>
+     function callback($buffer)
+     {
+       $fp = fopen("/tmp/test.txt","a+");
+       fwrite($fp,$buffer);
+       fwrite($fp,"\n");
+       fclose($fp);
+       return ($buffer);
+     }
+     ob_start("callback");
+     echo "## rmc_gets() ##";
+     rmc_log(100,0);
+     $nl = array();
+     $nl[] = "localhost_11211";
+     $nl[] = "localhost_11212";
+     $cid = rmc_init($nl,1);
+     echo $cid;
+     echo rmc_set($cid,"rmc_gets","FOOBAR",100,1000);
+     $ret = rmc_gets($cid,"rmc_gets",1000);
+     var_dump($ret);
+     ob_end_flush();
+   </code>
+   <result>
+  <![CDATA[
+## rmc_gets() ##localhost_11211localhost_112120array(3) {
+  [0]=>
+  string(6) "FOOBAR"
+  [1]=>
+  int(6)
+  [2]=>
+  int(0)
+}
+]]>
+  </result>
   </test>
  </function>
 

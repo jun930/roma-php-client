@@ -159,6 +159,37 @@ module Roma
              })
       end
 
+      def ev_alist_clear(s)
+        stub(s,{
+               'NOT_FOUND'    => "NOT_FOUND\r\n",
+               'NOT_CLEARED'  => "NOT_CLEARED\r\n",
+               'CLEARED'      => "CLEARED\r\n",
+               '_'            => "CLEARED\r\n"
+             })
+      end
+
+      def ev_alist_length(s)
+        stub(s,{
+               'NOT_FOUND'    => "NOT_FOUND\r\n",
+               '_'            => "10\r\n"
+             })
+      end
+
+      def ev_alist_update_at(s)
+        if ( s.length < 5 )
+          send_data("SERVER_ERROR Parameters not enough !\r\n")
+          return
+        end
+        v = read_bytes(s[4].to_i)
+        read_bytes(2)
+        stub(s,{
+               'NOT_FOUND'    => "NOT_FOUND\r\n",
+               'NOT_STORED'   => "NOT_STORED\r\n",
+               'STORED'       => "STORED\r\n",
+               '_'            => "STORED\r\n"
+             },v)
+      end
+
       private
 
       def stub(s,rets,v="");
@@ -276,7 +307,6 @@ module Roma
                '_'            => "10\r\n"
              })
       end
-
     end # module PluginStorage
 
   end # module CommandPlugin
