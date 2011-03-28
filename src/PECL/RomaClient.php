@@ -30,10 +30,12 @@ class RomaClient {
      * @brief Destructor
      *
      */
+/*
     private function __destruct() {
       // Instance cache
       // rmc_term($this->client_id);
     }
+*/
 
     /**
      * @brief Get roma-client instance.
@@ -244,7 +246,7 @@ class RomaClient {
       if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
         throw new Exception("rmc_gets() failure");
       }
-      return $result;
+      return $result[2];
     }
 
     /**
@@ -330,7 +332,7 @@ class RomaClient {
      * @return Returns True if success.
      */
     public function alist_clear($key) {
-      $result = rmc_alist_clear($this->client,$key,$this->default_timeout);
+      $result = rmc_alist_clear($this->client_id,$key,$this->default_timeout);
       if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
         throw new Exception("rmc_alist_clear() failure");
       }else if( $result == RomaClient::RMC_RET_ERROR ) {
@@ -338,13 +340,14 @@ class RomaClient {
       }
       return True;
     }
+
     /**
      * @brief ALIST operation. (Issue 'alist_length' command)
      * @param key
      * @return On success new value of the item's data, other than -1.
      */
     public function alist_length($key) {
-      $result = rmc_alist_length($this->client,$key,$this->default_timeout);
+      $result = rmc_alist_length($this->client_id,$key,$this->default_timeout);
       if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
         throw new Exception("rmc_alist_length() failure");
       }
@@ -359,7 +362,7 @@ class RomaClient {
      * @return Retuens True if sccess.
      */
     public function alist_update_at($key, $index, $value) {
-      $result = rmc_alist_update_at($this->client,$key,$index,$value,$this->default_timeout);
+      $result = rmc_alist_update_at($this->client_id,$key,$index,$value,$this->default_timeout);
       if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
         throw new Exception("rmc_alist_update_at() failure");
       }else if( $result == RomaClient::RMC_RET_ERROR ) {
