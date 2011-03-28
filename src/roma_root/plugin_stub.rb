@@ -162,7 +162,7 @@ module Roma
       def ev_alist_clear(s)
         stub(s,{
                'NOT_FOUND'    => "NOT_FOUND\r\n",
-               'NOT_CLEARED'  => "NOT_CREARED\r\n",
+               'NOT_CLEARED'  => "NOT_CLEARED\r\n",
                'CLEARED'      => "CLEARED\r\n",
                '_'            => "CLEARED\r\n"
              })
