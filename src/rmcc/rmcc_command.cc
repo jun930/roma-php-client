@@ -307,6 +307,7 @@ namespace rakuten {
       if ( strcmp("STORED",line) == 0 ) {
         this->roma_ret = RMC_RET_OK;
       }else if ( strcmp("NOT_STORED",line) == 0 ) {
+      }else if ( strcmp("NOT_FOUND",line) == 0 ) {
       }else if ( strcmp("EXISTS",line) == 0 ) {
       }else {
         Exception::throw_exception(0, EXP_PRE_MSG,"%s",line);
