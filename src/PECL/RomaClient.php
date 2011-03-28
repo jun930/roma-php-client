@@ -17,6 +17,8 @@ class RomaClient {
     private $default_timeout = 2000;
     const RMC_RET_ERROR = 1;
     const RMC_RET_EXCEPTION = 2;
+    const RMC_RET_GETS_NO_VALUE = -1;
+    const RMC_RET_ALIST_LENGTH_NOT_FOUND = -1;
     /**
      * @brief Constructor 
      * 
@@ -245,6 +247,8 @@ class RomaClient {
       $result = rmc_gets($this->client_id, $key, $this->default_timeout);
       if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
         throw new Exception("rmc_gets() failure");
+      }else if ( $result == RMC_RET_GETS_NO_VALUE ) {
+        return False;
       }
       return $result[2];
     }
@@ -350,8 +354,10 @@ class RomaClient {
       $result = rmc_alist_length($this->client_id,$key,$this->default_timeout);
       if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
         throw new Exception("rmc_alist_length() failure");
+      }else if ( $result == RomaClient::RMC_RET_ALIST_LENGTH_NOT_FOUND ) {
+        return False;
       }
-      return $result[2];
+      return $result;
     }
 
     /**
