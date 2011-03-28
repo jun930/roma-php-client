@@ -519,8 +519,8 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
   public function testAlistLengthNotFound()
   {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
-    $val = $this->roma_client->alist_length("CMD_NOT_FOUND");
-    $this->assertEquals(-1, $val);
+    $ret = $this->roma_client->alist_length("CMD_NOT_FOUND");
+    $this->assertFalse($ret);
   }
 
   /**
