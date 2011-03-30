@@ -1081,7 +1081,7 @@
      client_map_t::iterator it = client_map->find(client_id);
      if ( it != client_map->end() ) {
        try {
-         rakuten::rmcc::RomaValue v = it->second->cmd_cas_unique(key,timeout);
+         rakuten::rmcc::RomaValue v = it->second->cmd_gets(key,timeout);
          if ( v.length < 0 ) {
            add_index_stringl(return_value,0,(char*)"",0,1);
          }else {
