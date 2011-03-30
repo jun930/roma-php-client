@@ -1,5 +1,4 @@
 <?php
-require_once 'PHPUnit/Framework.php';
 require_once 'RomaClient.php';
 
 /**
@@ -9,6 +8,7 @@ require_once 'RomaClient.php';
 class RomaClientUnitTest extends PHPUnit_Framework_TestCase
 {
   public $nodes;
+  public $illegal_nodes;
 
   /* public function __construct($arg) { */
   /*   $this->nodes = $arg; */
@@ -41,16 +41,24 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
 
   /**
    * No.1
-   * No.2
    */
   public function testGetInstance(){
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
-    $this->assertType(RomaClient,$this->roma_client);
+    $this->assertInstanceOf(RomaClient,$this->roma_client);
+  }
+
+  /**
+   * No.2
+   */
+  public function testGetInstanceNoExists(){
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->getInstance($this->illegal_nodes);
+    $this->assertFalse($ret);
   }
 
   /**
    * No.3
-   * No.18
+   * No.
    */
   public function testSetDefaultTimeout(){
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
@@ -79,7 +87,7 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
 
   /**
    * No.4
-   * No.19
+   * No.
    */
   public function testSet() {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
@@ -89,7 +97,7 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
 
   /**
    * No.5
-   * No.20
+   * No.
    */
   public function testSetNotStored() {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
@@ -99,7 +107,7 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
 
   /**
    * No.6
-   * No.21
+   * No.
    */
   public function testGet(){
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
@@ -109,7 +117,7 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
 
   /**
    * No.7
-   * No.22
+   * No.
    */
   public function testGetNull(){
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
@@ -119,7 +127,7 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
 
   /**
    * No.8
-   * No.23
+   * No.
    */
   public function testAlistSizedInsert() {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
@@ -129,7 +137,7 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
 
   /**
    * No.9
-   * No.24
+   * No.
    */
   public function testAlistSizedInsertNotStored()
   {
@@ -140,7 +148,7 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
 
   /**
    * No.10
-   * No.25
+   * No.
    */
   public function testAlistJoin()
   {
@@ -151,7 +159,7 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
 
   /**
    * No.11
-   * No.26
+   * No.
    */
   public function testAlistJoinNull()
   {
@@ -162,7 +170,7 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
 
   /**
    * No.12
-   * No.27
+   * No.
    */
   public function testAlistDelete()
   {
@@ -173,7 +181,7 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
 
   /**
    * No.13
-   * No.28
+   * No.
    */
   public function testAlistDeleteNotDeleted()
   {
@@ -184,7 +192,7 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
 
   /**
    * No.14
-   * No.29
+   * No.
    */
   public function testAlistDeleteAt()
   {
@@ -195,7 +203,7 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
 
   /**
    * No.15
-   * No.30
+   * No.
    */
   public function testAlistDeleteAtNotDeleted()
   {
@@ -206,7 +214,7 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
 
   /**
    * No.16
-   * No.31
+   * No.
    */
   public function testDelete()
   {
@@ -217,7 +225,7 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
 
   /**
    * No.17
-   * No.32
+   * No.
    */
   public function testDeleteNotDeleted()
   {
@@ -450,22 +458,22 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
    * No.38
    * No.
    */
-  public function testGets()
+  public function testCasUnique()
   {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
-    $val = $this->roma_client->gets("CMD_");
-    $this->assertEquals(2, $val);
+    $val = $this->roma_client->cas_unique("CMD_");
+    $this->assertEquals(array(2, "FOOBAR"), $val);
   }
 
   /**
    * No.39
    * No.
    */
-  public function testGetsNull()
+  public function testCasUniqueNull()
   {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
-    $val = $this->roma_client->gets("CMD_NULL");
-    $this->assertEquals(-1, $val);
+    $val = $this->roma_client->cas_unique("CMD_NULL");
+    $this->assertEquals(array(-1,NULL), $val);
   }
 
   /**
@@ -554,6 +562,546 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
     $ret = $this->roma_client->alist_update_at("CMD_NOT_FOUND", 0, "bar");
     $this->assertFalse($ret);
+  }
+
+  /**
+   * No.48
+   * No.
+   */
+  public function testSetError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->set("CMD_ERROR", "bar", 0);
+      $this->fail('set() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_set() failure", $e->getMessage());
+  }
+
+  /**
+   * No.49
+   * No.
+   */
+  public function testGetError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->get("CMD_ERROR");
+      $this->fail('get() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_get() failure", $e->getMessage());
+  }
+
+  /**
+   * No.50
+   * No.
+   */
+  public function testAlistSizedInsertError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->alist_sized_insert("CMD_ERROR", 10, "alist-value");
+      $this->fail('alist_sized_insert() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_sized_insert() failure", $e->getMessage());
+  }
+
+  /**
+   * No.51
+   * No.
+   */
+  public function testAlistJoinError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->alist_join("CMD_ERROR", ",");
+      $this->fail('alist_join() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_join() failure", $e->getMessage());
+  }
+
+  /**
+   * No.52
+   * No.
+   */
+  public function testAlistDeleteError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->alist_delete("CMD_ERROR", "alist-delete-value");
+      $this->fail('alist_delete() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_delete() failure", $e->getMessage());
+  }
+
+  /**
+   * No.53
+   * No.
+   */
+  public function testAlistDeleteAtError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->alist_delete_at("CMD_ERROR", 0);
+      $this->fail('alist_delete_at() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_delete_at() failure", $e->getMessage());
+  }
+
+  /**
+   * No.54
+   * No.
+   */
+  public function testDeleteError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->delete("CMD_ERROR", 0);
+      $this->fail('delete() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_delete() failure", $e->getMessage());
+  }
+
+  /**
+   * No.55
+   * No.
+   */
+  public function testAddError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->add("CMD_ERROR", "bar", 0);
+      $this->fail('add() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_add() failure", $e->getMessage());
+  }
+
+  /**
+   * No.56
+   * No.
+   */
+  public function testReplaceError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->replace("CMD_ERROR", "bar", 0);
+      $this->fail('replace() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_replace() failure", $e->getMessage());
+  }
+
+  /**
+   * No.57
+   * No.
+   */
+  public function testAppendError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->append("CMD_ERROR", "bar", 0);
+      $this->fail('append() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_append() failure", $e->getMessage());
+  }
+
+  /**
+   * No.58
+   * No.
+   */
+  public function testPrependError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->prepend("CMD_ERROR", "bar", 0);
+      $this->fail('prepend() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_prepend() failure", $e->getMessage());
+  }
+
+  /**
+   * No.59
+   * No.
+   */
+  public function testCasError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->cas("CMD_ERROR", "bar", 0 ,0);
+      $this->fail('cas() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_cas() failure", $e->getMessage());
+  }
+
+  /**
+   * No.60
+   * No.
+   */
+  public function testIncrError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->incr("CMD_ERROR", 1);
+      $this->fail('incr() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_incr() failure", $e->getMessage());
+  }
+
+  /**
+   * No.61
+   * No.
+   */
+  public function testDecrError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->decr("CMD_ERROR", 1);
+      $this->fail('decr() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_decr() failure", $e->getMessage());
+  }
+
+  /**
+   * No.62
+   * No.
+   */
+  public function testCasUniqueError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->cas_unique("CMD_ERROR");
+      $this->fail('cas_unique() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_cas_unique() failure", $e->getMessage());
+  }
+
+  /**
+   * No.63
+   * No.
+   */
+  public function testAlistClearError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->alist_clear("CMD_ERROR");
+      $this->fail('alist_clear() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_clear() failure", $e->getMessage());
+  }
+
+  /**
+   * No.64
+   * No.
+   */
+  public function testAlistLengthError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->alist_length("CMD_ERROR");
+      $this->fail('alist_length() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_length() failure", $e->getMessage());
+  }
+
+  /**
+   * No.65
+   * No.
+   */
+  public function testAlistUpdateAtError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->alist_update_at("CMD_ERROR", 0, "bar");
+      $this->fail('alist_update_at() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_update_at() failure", $e->getMessage());
+  }
+
+  /**
+   * No.66
+   * No.
+   */
+  public function testSetServerError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->set("CMD_SERVER_ERROR", "bar", 0);
+      $this->fail('set() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_set() failure", $e->getMessage());
+  }
+
+  /**
+   * No.67
+   * No.
+   */
+  public function testGetServerError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->get("CMD_SERVER_ERROR");
+      $this->fail('get() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_get() failure", $e->getMessage());
+  }
+
+  /**
+   * No.68
+   * No.
+   */
+  public function testAlistSizedInsertServerError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->alist_sized_insert("CMD_SERVER_ERROR", 10, "alist-value");
+      $this->fail('alist_sized_insert() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_sized_insert() failure", $e->getMessage());
+  }
+
+  /**
+   * No.69
+   * No.
+   */
+  public function testAlistJoinServerError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->alist_join("CMD_SERVER_ERROR", ",");
+      $this->fail('alist_join() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_join() failure", $e->getMessage());
+  }
+
+  /**
+   * No.70
+   * No.
+   */
+  public function testAlistDeleteServerError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->alist_delete("CMD_SERVER_ERROR", "alist-delete-value");
+      $this->fail('alist_delete() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_delete() failure", $e->getMessage());
+  }
+
+  /**
+   * No.71
+   * No.
+   */
+  public function testAlistDeleteAtServerError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->alist_delete_at("CMD_SERVER_ERROR", 0);
+      $this->fail('alist_delete_at() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_delete_at() failure", $e->getMessage());
+  }
+
+  /**
+   * No.72
+   * No.
+   */
+  public function testDeleteServerError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->delete("CMD_SERVER_ERROR", 0);
+      $this->fail('delete() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_delete() failure", $e->getMessage());
+  }
+
+  /**
+   * No.73
+   * No.
+   */
+  public function testAddServerError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->add("CMD_SERVER_ERROR", "bar", 0);
+      $this->fail('add() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_add() failure", $e->getMessage());
+  }
+
+  /**
+   * No.74
+   * No.
+   */
+  public function testReplaceServerError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->replace("CMD_SERVER_ERROR", "bar", 0);
+      $this->fail('replace() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_replace() failure", $e->getMessage());
+  }
+
+  /**
+   * No.75
+   * No.
+   */
+  public function testAppendServerError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->append("CMD_SERVER_ERROR", "bar", 0);
+      $this->fail('append() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_append() failure", $e->getMessage());
+  }
+
+  /**
+   * No.76
+   * No.
+   */
+  public function testPrependServerError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->prepend("CMD_SERVER_ERROR", "bar", 0);
+      $this->fail('prepend() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_prepend() failure", $e->getMessage());
+  }
+
+  /**
+   * No.77
+   * No.
+   */
+  public function testCasServerError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->cas("CMD_SERVER_ERROR", "bar", 0 ,0);
+      $this->fail('cas() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_cas() failure", $e->getMessage());
+  }
+
+  /**
+   * No.78
+   * No.
+   */
+  public function testIncrServerError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->incr("CMD_SERVER_ERROR", 1);
+      $this->fail('incr() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_incr() failure", $e->getMessage());
+  }
+
+  /**
+   * No.79
+   * No.
+   */
+  public function testDecrServerError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->decr("CMD_SERVER_ERROR", 1);
+      $this->fail('decr() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_decr() failure", $e->getMessage());
+  }
+
+  /**
+   * No.80
+   * No.
+   */
+  public function testCasUniqueServerError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->cas_unique("CMD_SERVER_ERROR");
+      $this->fail('cas_unique() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_cas_unique() failure", $e->getMessage());
+  }
+
+  /**
+   * No.81
+   * No.
+   */
+  public function testAlistClearServerError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->alist_clear("CMD_SERVER_ERROR");
+      $this->fail('alist_clear() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_clear() failure", $e->getMessage());
+  }
+
+  /**
+   * No.82
+   * No.
+   */
+  public function testAlistLengthServerError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->alist_length("CMD_SERVER_ERROR");
+      $this->fail('alist_length() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_length() failure", $e->getMessage());
+  }
+
+  /**
+   * No.83
+   * No.
+   */
+  public function testAlistUpdateAtServerError()
+  {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->alist_update_at("CMD_SERVER_ERROR", 0, "bar");
+      $this->fail('alist_update_at() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_update_at() failure", $e->getMessage());
   }
 }
 ?>

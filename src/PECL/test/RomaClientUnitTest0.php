@@ -1,5 +1,4 @@
 <?php
-require_once 'PHPUnit/Framework.php';
 require_once 'RomaClientUnitTest.php';
 
 /**
@@ -10,6 +9,7 @@ class RomaClientUnitTest0 extends RomaClientUnitTest
 {
   public function __construct() {
     $this->nodes = array('-d','localhost_23456');
+    $this->illegal_nodes = array('-d','localhost_12345');
   }
 }
 ?>

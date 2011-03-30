@@ -1,6 +1,5 @@
 <?php
-require_once 'PHPUnit/Framework.php';
-require_once 'PHPUnit/TextUI/TestRunner.php';
+require_once 'PHPUnit/Autoload.php';
 require_once 'RomaClientUnitTest0.php';
 require_once 'RomaClientUnitTest1.php';
 require_once 'RomaClientUnitTest2.php';
