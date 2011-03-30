@@ -361,8 +361,12 @@ namespace rakuten {
       }else if ( strncmp("SERVER_ERROR",line,12) == 0){
 	Exception::throw_exception(0, EXP_PRE_MSG,"%s",line);
       }else{
-	this->roma_ret = RMC_RET_OK;
 	this->value = atoi(line);
+	if(this->value == 0 && strcmp("0",line) != 0){
+	  Exception::throw_exception(0, EXP_PRE_MSG,"%s",line);
+	}else{
+	  this->roma_ret = RMC_RET_OK;
+	}
       }
       return RECV_OVER;
     }
@@ -386,8 +390,12 @@ namespace rakuten {
       }else if ( strncmp("SERVER_ERROR",line,12) == 0){
 	Exception::throw_exception(0, EXP_PRE_MSG,"%s",line);
       }else{
-	this->roma_ret = RMC_RET_OK;
 	this->value = atoi(line);
+	if(this->value == 0 && strcmp("0",line) != 0){
+	  Exception::throw_exception(0, EXP_PRE_MSG,"%s",line);
+	}else{
+	  this->roma_ret = RMC_RET_OK;
+	}
       }
       return RECV_OVER;
     }
@@ -631,8 +639,12 @@ namespace rakuten {
       }else if ( strncmp("SERVER_ERROR",line,12) == 0){
 	Exception::throw_exception(0, EXP_PRE_MSG,"%s",line);
       }else {
-	this->roma_ret = RMC_RET_OK;
 	this->length = atoi(line);
+	if(this->length == 0 && strcmp("0",line) != 0){
+	  Exception::throw_exception(0, EXP_PRE_MSG,"%s",line);
+	}else{
+	  this->roma_ret = RMC_RET_OK;
+	}
       }
       return RECV_OVER;
     }
