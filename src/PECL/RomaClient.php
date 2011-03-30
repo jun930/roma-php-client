@@ -17,7 +17,7 @@ class RomaClient {
     private $default_timeout = 2000;
     const RMC_RET_ERROR = 1;
     const RMC_RET_EXCEPTION = 2;
-    const RMC_RET_GETS_NO_VALUE = -1;
+    const RMC_RET_CAS_UNIQUE_NO_VALUE = -1;
     const RMC_RET_ALIST_LENGTH_NOT_FOUND = -1;
     /**
      * @brief Constructor 
@@ -239,18 +239,19 @@ class RomaClient {
     }
 
     /**
-     * @brief Gets value.(Issue 'gets' command).
+     * @brief Gets value. (Issue 'gets' command).
+     * @brief This command is 'cas ID' response only.
      * @param key
      * @return On success new value of the item's data, other than -1.
      */
-    public function gets($key) {
-      $result = rmc_gets($this->client_id, $key, $this->default_timeout);
+    public function cas_unique($key) {
+      $result = rmc_cas_unique($this->client_id, $key, $this->default_timeout);
       if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
-        throw new Exception("rmc_gets() failure");
-      }else if ( $result == RMC_RET_GETS_NO_VALUE ) {
+        throw new Exception("rmc_cas_unique() failure");
+      }else if ( $result == RMC_RET_CAS_UNIQUE_NO_VALUE ) {
         return False;
       }
-      return $result[2];
+      return array($result[2],$result[0]);
     }
 
     /**

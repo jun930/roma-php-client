@@ -486,7 +486,7 @@
      $cid = rmc_init($nl,1);
      echo $cid;
      echo rmc_set($cid,"rmc_cas","FOOBAR",100,1000);
-     $ret = rmc_gets($cid,"rmc_cas",1000);
+     $ret = rmc_cas_unique($cid,"rmc_cas",1000);
      echo rmc_cas($cid,"rmc_cas","FOOBAR",100,$ret[2],1000);
      ob_end_flush();
    </code>
@@ -1072,8 +1072,8 @@
   </test>
  </function>
 
- <function name="rmc_gets">
-  <proto>array rmc_gets(string client_id, string key,int timeout)</proto>
+ <function name="rmc_cas_unique">
+  <proto>array rmc_cas_unique(string client_id, string key,int timeout)</proto>
   <code>
   <![CDATA[
      typedef std::map<std::string,rakuten::rmcc::RomaClient *> client_map_t;
@@ -1081,7 +1081,7 @@
      client_map_t::iterator it = client_map->find(client_id);
      if ( it != client_map->end() ) {
        try {
-         rakuten::rmcc::RomaValue v = it->second->cmd_gets(key,timeout);
+         rakuten::rmcc::RomaValue v = it->second->cmd_cas_unique(key,timeout);
          if ( v.length < 0 ) {
            add_index_stringl(return_value,0,(char*)"",0,1);
          }else {
@@ -1109,21 +1109,21 @@
        return ($buffer);
      }
      ob_start("callback");
-     echo "## rmc_gets() ##";
+     echo "## rmc_cas_unique() ##";
      rmc_log(100,0);
      $nl = array();
      $nl[] = "localhost_11211";
      $nl[] = "localhost_11212";
      $cid = rmc_init($nl,1);
      echo $cid;
-     echo rmc_set($cid,"rmc_gets","FOOBAR",100,1000);
-     $ret = rmc_gets($cid,"rmc_gets",1000);
+     echo rmc_set($cid,"rmc_cas_unique","FOOBAR",100,1000);
+     $ret = rmc_cas_unique($cid,"rmc_cas_unique",1000);
      var_dump($ret);
      ob_end_flush();
    </code>
    <result>
   <![CDATA[
-## rmc_gets() ##localhost_11211localhost_112120array(3) {
+## rmc_cas_unique() ##localhost_11211localhost_112120array(3) {
   [0]=>
   string(6) "FOOBAR"
   [1]=>
