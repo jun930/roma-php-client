@@ -16,6 +16,12 @@ case $1 in
 	./roma/ruby/server/bin/mkroute localhost_23456 -r 1 --enabled_repeathost
 	./roma/ruby/server/bin/romad --config ptest_config.rb  localhost -p 23456 -d --enabled_repeathost
 	;;
+    starts)
+	rm localhost_*
+	./roma/ruby/server/bin/mkroute localhost_11211 localhost_11212 --enabled_repeathost
+	./roma/ruby/server/bin/romad --config ntest_config.rb localhost -p 11211 -d --enabled_repeathost 2> /dev/null
+	./roma/ruby/server/bin/romad --config ntest_config.rb localhost -p 11212 -d --enabled_repeathost 2> /dev/null
+	;;
     prof)
         rm localhost_*
 	./roma/ruby/server/bin/mkroute localhost_11211 localhost_11212 localhost_11213 localhost_11214 --enabled_repeathost
@@ -39,6 +45,15 @@ case $1 in
 	./roma/ruby/server/bin/romad --config ntest_config.rb localhost -p 11214 -d -j localhost_11211 --enabled_repeathost
 	nc localhost 11212 <<< "recover"
 	;;
+    join1)
+	./roma/ruby/server/bin/romad --config ntest_config.rb localhost -p 11211 -d -j localhost_11212 --enabled_repeathost
+	;;
+    join2)
+	./roma/ruby/server/bin/romad --config ntest_config.rb localhost -p 11212 -d -j localhost_11211 --enabled_repeathost
+	;;
+    join3)
+	./roma/ruby/server/bin/romad --config ntest_config.rb localhost -p 11213 -d -j localhost_11211 --enabled_repeathost
+	;;
     stop)
 	nc localhost 11211 <<< rbalse
 	nc localhost 11212 <<< rbalse
@@ -47,6 +62,15 @@ case $1 in
 	nc localhost 11219 <<< rbalse
 	nc localhost 23456 <<< rbalse
 	;;
+    stops)
+	nc localhost 11211 <<< rbalse
+	nc localhost 11212 <<< rbalse
+	;;
+    stopss)
+        nc localhost 11211 <<< rbalse
+        nc localhost 11212 <<< rbalse
+        nc localhost 11213 <<< rbalse
+        ;;
     stop1)
 	nc localhost 11211 <<< rbalse
 	;;
