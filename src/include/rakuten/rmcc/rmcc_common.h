@@ -16,6 +16,8 @@ namespace rakuten {
     static const rmc_ret_t RMC_RET_ERROR = 1;
     static const rmc_ret_t RMC_RET_EXCEPTION = 2;
     static const rmc_ret_t RMC_CAS_UNINITIALIZED = -1;
+    static const rmc_ret_t RMC_RET_INCDEC_ERROR = -1;
+    static const rmc_ret_t RMC_RET_ALIST_LENGTH_ERROR = -1;
     
     typedef int routing_mode_t;
     static const routing_mode_t  ROUTING_MODE_USE = 1; 
