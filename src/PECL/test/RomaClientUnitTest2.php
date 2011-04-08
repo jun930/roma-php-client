@@ -9,6 +9,7 @@ class RomaClientUnitTest2 extends PHPUnit_Framework_TestCase
 {
 
   protected $roma_client;
+  protected $val_100kb;
 
   /**
    * Sets up the fixture, for example, opens a network connection.
@@ -17,11 +18,17 @@ class RomaClientUnitTest2 extends PHPUnit_Framework_TestCase
    * @access protected
    */
   protected function setUp(){
-    $this->roma_client = RomaClient::getInstance(array("localhost_11211","localhost_11212"));
-    $ret = $this->roma_client->alist_sized_insert("alist-key", 3,"aaa");
-    $ret = $this->roma_client->alist_sized_insert("alist-key", 3,"bbb");
-    $ret = $this->roma_client->alist_sized_insert("alist-key", 3,"ccc");
+    //rmc_log(0,0);
+    $this->roma_client = RomaClient::getInstance(array("localhost_11211","localhost_11212","localhost_11213","localhost_11214"));
+    //$ret = $this->roma_client->alist_sized_insert("alist-key", 3,"aaa");
+    //$ret = $this->roma_client->alist_sized_insert("alist-key", 3,"bbb");
+    //$ret = $this->roma_client->alist_sized_insert("alist-key", 3,"ccc");
+    $val_10b = "0123456789";
+    for ($i = 0; $i < 10000; $i++) {
+      $this->val_100kb .= $val_10b;
+    }
   }
+
   /**
    * Tears down the fixture, for example, closes a network connection.
    * This method is called after a test is executed.
@@ -33,190 +40,1368 @@ class RomaClientUnitTest2 extends PHPUnit_Framework_TestCase
   }
 
   /**
-   * No.
-   * No.
-   */
-  public function testSetKeyNull() {
-    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
-    try {
-      $ret = $this->roma_client->set(NULL, "bar", 0);
-      $this->assertTrue(false,"should throw!");
-    } catch (PHPUnit_Framework_AssertionFailedError $e) {
-      throw $e;
-    } catch (Exception $e) {
-    }
-  }
-  /**
-   * No.
+   * No.2
    * No.
    */
-  public function testSetValNull() {
+  public function testGet() {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
-    $ret = $this->roma_client->set("foo", NULL, 0);
-    $this->assertTrue($ret);
+    $this->roma_client->set("test-get", "test-get", 100);
+    $val = $this->roma_client->get("test-get");
+    $this->assertEquals("test-get", $val);
   }
+
   /**
-   * No.
+   * No.3
    * No.
    */
-  public function testSetKeyEmpty() {
+  public function testGetNoKey() {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
-    try {
-      $ret = $this->roma_client->set("", "bar", 0);
-      $this->assertTrue(false,"should throw!");
-    } catch (PHPUnit_Framework_AssertionFailedError $e) {
-      throw $e;
-    } catch (Exception $e) {
-    }
+    $val = $this->roma_client->get("test-get-Nokey");
+    $this->assertEquals(NULL, $val);
   }
+
   /**
-   * No.
-   * No.
-   */
-  public function testSetValEmpty() {
-    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
-    $ret = $this->roma_client->set("foo", NULL, 0);
-    $this->assertTrue($ret);
-  }
-  /**
-   * No.
+   * No.4
    * No.
    */
   public function testGetKeyNull() {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
     try {
       $ret = $this->roma_client->get(NULL);
-      $this->assertTrue(false,"should throw!");
-    } catch (PHPUnit_Framework_AssertionFailedError $e) {
-      throw $e;
+      $this->fail('get() test failure');
     } catch (Exception $e) {
     }
-  }
-  /**
-   * No.
-   * No.
-   */
-  public function testGetKeyEmpty() {
-    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
-    try {
-      $ret = $this->roma_client->get("");
-      $this->assertTrue(false,"should throw!");
-    } catch (PHPUnit_Framework_AssertionFailedError $e) {
-      throw $e;
-    } catch (Exception $e) {
-    }
+    $this->assertEquals("rmc_get() failure", $e->getMessage());
   }
 
   /**
+   * No.5
    * No.
+   */
+  public function testGetKeyBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->get("");
+      $this->fail('get() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_get() failure", $e->getMessage());
+  }
+
+  /**
+   * No.6
+   * No.
+   */
+  public function testGetLarge() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-get-large", $this->val_100kb, 100);
+    $val = $this->roma_client->get("test-get-large");
+    $this->assertEquals($this->val_100kb, $val);
+  }
+
+  /**
+   * No.7
+   * No.
+   */
+  public function testSet() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->set("test-set", "test-set", 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.8
+   * No.
+   */
+  public function testSetKeyNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->set(NULL, "test-set-key-null", 100);
+      $this->fail('set() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_set() failure", $e->getMessage());
+  }
+
+  /**
+   * No.9
+   * No.
+   */
+  public function testSetValueNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->set("test-set-val-null", NULL, 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.10
+   * No.
+   */
+  public function testSetLarge() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->set("test-set-large", $this->val_100kb, 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.11
+   * No.
+   */
+  public function testSetValueBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->set("test-set-value-blank", "", 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.12
+   * No.
+   */
+  public function testSetKeyBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->set("", "test-set-key-blank", 100);
+      $this->fail('set() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_set() failure", $e->getMessage());
+  }
+
+  /**
+   * No.13
+   * No.
+   */
+  public function testAlistSizedInsert() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->alist_sized_insert("test-alist-sized-insert", 10, "test-alist-sized-insert");
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.14
+   * No.
+   */
+  public function testAlistSizedInsertZero() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->alist_sized_insert("test-alist-sized-insert-zero", 0, "test-alist-sized-insert-zero");
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.15
+   * No.
+   */
+  public function testAlistSizedInsertMinus() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->alist_sized_insert("test-alist-sized-insert-minus", -1, "test-alist-sized-insert-minus");
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.16
    * No.
    */
   public function testAlistSizedInsertKeyNull() {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
     try {
-      $ret = $this->roma_client->alist_sized_insert(NULL, 10,"alist-value");
-      $this->assertTrue(false,"should throw!");
-    } catch (PHPUnit_Framework_AssertionFailedError $e) {
-      throw $e;
+      $ret = $this->roma_client->alist_sized_insert(NULL, 10, "test-alist-sized-insert-key-null");
+      $this->fail('alist_sized_insert() test failure');
     } catch (Exception $e) {
     }
+    $this->assertEquals("rmc_alist_sized_insert() failure", $e->getMessage());
   }
+
   /**
-   * No.
+   * No.17
    * No.
    */
-  public function testAlistSizedInsertValNull() {
+  public function testAlistSizedInsertValueNull() {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
-    $ret = $this->roma_client->alist_sized_insert("alist-key",10, NULL);
+    $ret = $this->roma_client->alist_sized_insert("test-alist-sized-insert-value-null", 10, NULL);
     $this->assertTrue($ret);
   }
+
   /**
-   * No.
+   * No.18
    * No.
    */
-  public function testAlistSizedInsertKeyEmpty() {
+  public function testAlistSizedInsertKeyBlank() {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
     try {
-      $ret = $this->roma_client->alist_sized_insert("", 10 ,"alist-value");
-      $this->assertTrue(false,"should throw!");
-    } catch (PHPUnit_Framework_AssertionFailedError $e) {
-      throw $e;
+      $ret = $this->roma_client->alist_sized_insert("", 10, "test-alist-sized-insert-key-blank");
+      $this->fail('alist_sized_insert() test failure');
     } catch (Exception $e) {
     }
+    $this->assertEquals("rmc_alist_sized_insert() failure", $e->getMessage());
   }
+
   /**
-   * No.
+   * No.19
    * No.
    */
-  public function testAlistSizedInsertValEmpty() {
+  public function testAlistSizedInsertValueBlank() {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
-    $ret = $this->roma_client->alist_sized_insert("alist-key", 10 , NULL);
+    $ret = $this->roma_client->alist_sized_insert("test-alist-sized-insert-value-blank", 10, "");
     $this->assertTrue($ret);
   }
+
   /**
-   * No.
+   * No.20
    * No.
    */
-  public function testAlistSizedInsertSizeZero() {
+  public function testAlistSizedInsertNotEnough() {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
-    $ret = $this->roma_client->alist_sized_insert("alist-key", 0 , "alist-value");
-    $this->assertTrue($ret);
+    try {
+      $ret = $this->roma_client->alist_sized_insert("test-alist-sized-insert-not-enough");
+      $this->fail('alist_sized_insert() test failure');
+    } catch (Exception $e) {
+      $flg = True;
+    }
+    $this->assertTrue($flg);
   }
+
   /**
-   * No.
+   * No.21
    * No.
    */
-  public function testAlistSizedInsertSizeNegative() {
+  public function testAlistSizedInsertLarge() {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
-    $ret = $this->roma_client->alist_sized_insert("alist-key", -1 , "alist-value");
+    $ret = $this->roma_client->alist_sized_insert("test-alist-sized-insert-large", 10, $this->val_100kb);
     $this->assertTrue($ret);
   }
+
   /**
+   * No.22
    * No.
+   */
+  public function testAlistJoin() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->alist_sized_insert("test-alist-join", 10, "test-alist-join1");
+    $this->roma_client->alist_sized_insert("test-alist-join", 10, "test-alist-join2");
+    $val = $this->roma_client->alist_join("test-alist-join", ",");
+    $this->roma_client->delete("test-alist-join");
+    $this->assertEquals(array("test-alist-join2","test-alist-join1"), $val);
+  }
+
+  /**
+   * No.23
+   * No.
+   */
+  public function testAlistJoinNoExists() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $val = $this->roma_client->alist_join("test-alist-join-no-exists", ",");
+    $this->assertEquals(NULL, $val);
+  }
+
+  /**
+   * No.24
    * No.
    */
   public function testAlistJoinKeyNull() {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
     try {
-      $ret = $this->roma_client->alist_join(NULL,"|");
-      $this->assertTrue(false,"should throw!");
-    } catch (PHPUnit_Framework_AssertionFailedError $e) {
-      throw $e;
+      $ret = $this->roma_client->alist_join(NULL, ",");
+      $this->fail('alist_join() test failure');
     } catch (Exception $e) {
     }
+    $this->assertEquals("rmc_alist_join() failure", $e->getMessage());
   }
+
   /**
+   * No.25
    * No.
+   */
+  public function testAlistJoinKeyBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->alist_join("", ",");
+      $this->fail('alist_join() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_join() failure", $e->getMessage());
+  }
+
+  /**
+   * No.26
    * No.
    */
   public function testAlistJoinSepNull() {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->alist_sized_insert("test-alist-join-sep-null", 10, "test-alist-join-sep-null1");
+    $this->roma_client->alist_sized_insert("test-alist-join-sep-null", 10, "test-alist-join-sep-null2");
+    $val = $this->roma_client->alist_join("test-alist-join-sep-null", NULL);
+    $this->roma_client->delete("test-alist-join-sep-null"); // after test task.
+    $this->assertEquals(array("test-alist-join-sep-null2test-alist-join-sep-null1"), $val);
+  }
+
+  /**
+   * No.27
+   * No.
+   */
+  public function testAlistJoinSepBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->alist_sized_insert("test-alist-join-sep-blank", 10, "test-alist-join-sep-blank1");
+    $this->roma_client->alist_sized_insert("test-alist-join-sep-blank", 10, "test-alist-join-sep-blank2");
+    $val = $this->roma_client->alist_join("test-alist-join-sep-blank", NULL);
+    $this->roma_client->delete("test-alist-join-sep-blank"); // after test task.
+    $this->assertEquals(array("test-alist-join-sep-blank2test-alist-join-sep-blank1"), $val);
+  }
+
+  /**
+   * No.28
+   * No.
+   */
+  public function testAlistJoinLarge() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->alist_sized_insert("test-alist-join-large", 10, $this->val_100kb);
+    $val = $this->roma_client->alist_join("test-alist-join-large", ",");
+    $this->assertEquals($val[0], $this->val_100kb);
+  }
+
+  /**
+   * No.29
+   * No.
+   */
+  public function testAlistDelete() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->alist_sized_insert("test-alist-delete", 10, "test-alist-delete1");
+    $this->roma_client->alist_sized_insert("test-alist-delete", 10, "test-alist-delete2");
+    $ret = $this->roma_client->alist_delete("test-alist-delete", "test-alist-delete1");
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.30
+   * No.
+   */
+  public function testAlistDeleteValNoExists() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->alist_sized_insert("test-alist-delete-val-no-exists", 10, "test-alist-delete-val-exists");
+    $ret = $this->roma_client->alist_delete("test-alist-delete-val-no-exists", "test-alist-delete-val-no-exists");
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.31
+   * No.
+   */
+  public function testAlistDeleteValNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->alist_delete("test-alist-delete-val-null", NULL);
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.32
+   * No.
+   */
+  public function testAlistDeleteValBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->alist_delete("test-alist-delete-val-blank", "");
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.33
+   * No.
+   */
+  public function testAlistDeleteKeyNoExists() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->alist_delete("test-alist-delete-key-no-exists", "test-alist-delete-key-no-exists");
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.34
+   * No.
+   */
+  public function testAlistDeleteKeyNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
     try {
-      $val = $this->roma_client->alist_join("alist-key",NULL);
-      $this->assertEquals("cccbbbaaa",implode('+',$val));
-    } catch (PHPUnit_Framework_AssertionFailedError $e) {
-      throw $e;
+      $ret = $this->roma_client->alist_delete(NULL, "test-alist-delete-key-null");
+      $this->fail('alist_delete() test failure');
     } catch (Exception $e) {
     }
+    $this->assertEquals("rmc_alist_delete() failure", $e->getMessage());
   }
-  /**
-   * No.
-   * No.
-   */
-  public function testAlistJoinNotfound() {
-    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
-    $val = $this->roma_client->alist_join("NOT_FOUND", "|");
-    $this->assertEquals(NULL,$val);
-  }
-  /**
-   * No.
-   * No.
-   */
-  public function testAlistJoinSeqEmpty() {
-    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
-    $val = $this->roma_client->alist_join("alist-key", "");
-    $this->assertEquals("cccbbbaaa",implode('+',$val));
-  }
-}
 
+  /**
+   * No.35
+   * No.
+   */
+  public function testAlistDeleteKeyBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->alist_delete("", "test-alist-delete-key-blank");
+      $this->fail('alist_delete() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_delete() failure", $e->getMessage());
+  }
+
+  /**
+   * No.36
+   * No.
+   */
+  public function testAlistDeleteAt() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->alist_sized_insert("test-alist-delete-at", 10, "test-alist-delete-at1");
+    $this->roma_client->alist_sized_insert("test-alist-delete-at", 10, "test-alist-delete-at2");
+    $ret = $this->roma_client->alist_delete_at("test-alist-delete-at", 0);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.37
+   * No.
+   */
+  public function testAlistDeleteAtIndexNoExists() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->alist_sized_insert("test-alist-delete-at-index-no-exists", 10, "test-alist-delete-at-index-no-exists");
+    $ret = $this->roma_client->alist_delete_at("test-alist-delete-at-index-no-exists", 1);
+    $this->roma_client->delete("test-alist-delete-at-index-no-exists"); // after test task.
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.38
+   * No.
+   */
+  public function testAlistDeleteAtIndexMinus() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->alist_sized_insert("test-alist-delete-at-index-minus", 10, "test-alist-delete-at-index-minus");
+    $ret = $this->roma_client->alist_delete_at("test-alist-delete-at-index-minus", -1);
+    $this->roma_client->delete("test-alist-delete-at-index-minus"); // after test task.
+    $this->assertTrue($ret); // ?
+  }
+
+  /**
+   * No.39
+   * No.
+   */
+  public function testAlistDeleteAtIndexNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->alist_sized_insert("test-alist-delete-at-index-null", 10, "test-alist-delete-at-index-null");
+    $ret = $this->roma_client->alist_delete_at("test-alist-delete-at-index-null", NULL);
+    $this->roma_client->delete("test-alist-delete-at-index-null"); // after test task.
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.40
+   * No.
+   */
+  public function testAlistDeleteAtIndexBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $this->roma_client->alist_sized_insert("test-alist-delete-at-index-blank", 10, "test-alist-delete-at-index-blank");
+      $ret = $this->roma_client->alist_delete_at("test-alist-delete-at-index-blank", "");
+      $this->fail('alist_delete_at() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_delete_at() expects parameter 3 to be long, string given", $e->getMessage());
+  }
+
+  /**
+   * No.41
+   * No.
+   */
+  public function testAlistDeleteAtKeyNoExists() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->alist_delete_at("test-alist-delete-at-key-no-exists", 0);
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.42
+   * No.
+   */
+  public function testAlistDeleteAtKeyNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->alist_delete_at(NULL, 0);
+      $this->fail('alist_delete_at() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_delete_at() failure", $e->getMessage());
+  }
+
+  /**
+   * No.43
+   * No.
+   */
+  public function testAlistDeleteAtKeyBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->alist_delete_at("", 0);
+      $this->fail('alist_delete_at() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_delete_at() failure", $e->getMessage());
+  }
+
+  /**
+   * No.44
+   * No.
+   */
+  public function testDelete() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-delete", "test-delete", 100);
+    $ret = $this->roma_client->delete("test-delete");
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.45
+   * No.
+   */
+  public function testDeleteKeyNoExists() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->delete("test-delete-key-no-exists");
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.46
+   * No.
+   */
+  public function testDeleteKeyNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->delete(NULL);
+      $this->fail('delete() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_delete() failure", $e->getMessage());
+  }
+
+  /**
+   * No.47
+   * No.
+   */
+  public function testDeleteKeyBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->delete("");
+      $this->fail('delete() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_delete() failure", $e->getMessage());
+  }
+
+  /**
+   * No.48
+   * No.
+   */
+  public function testAdd() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->add("test-add", "test-add", 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.
+   * No.
+   */
+  public function testAddExists() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-add-exists", "test-add-exists1", 100);
+    $ret = $this->roma_client->add("test-add-exists", "test-add-exists2", 100);
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.49
+   * No.
+   */
+  public function testAddKeyNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->add(NULL, "test-add-key-null", 100);
+      $this->fail('add() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_add() failure", $e->getMessage());
+  }
+
+  /**
+   * No.50
+   * No.
+   */
+  public function testAddValueNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->add("test-add-val-null", NULL, 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.51
+   * No.
+   */
+  public function testAddLarge() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->add("test-add-large", $this->val_100kb, 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.52
+   * No.
+   */
+  public function testAddValueBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->add("test-add-value-blank", "", 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.53
+   * No.
+   */
+  public function testAddKeyBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->add("", "test-add-key-blank", 100);
+      $this->fail('add() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_add() failure", $e->getMessage());
+  }
+
+  /**
+   * No.54
+   * No.
+   */
+  public function testReplace() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-replace", "test-replace1", 100);
+    $ret = $this->roma_client->replace("test-replace", "test-replace2", 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.
+   * No.
+   */
+  public function testReplaceNoExists() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->replace("test-replace-no-exists", "test-replace-no-exists", 100);
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.55
+   * No.
+   */
+  public function testReplaceKeyNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->replace(NULL, "test-replace-key-null", 100);
+      $this->fail('replace() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_replace() failure", $e->getMessage());
+  }
+
+  /**
+   * No.56
+   * No.
+   */
+  public function testReplaceValueNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-replace-val-null", "test-replace-val-null", 100);
+    $ret = $this->roma_client->replace("test-replace-val-null", NULL, 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.57
+   * No.
+   */
+  public function testReplaceLarge() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-replace-large", "test-replace-large", 100);
+    $ret = $this->roma_client->replace("test-replace-large", $this->val_100kb, 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.58
+   * No.
+   */
+  public function testReplaceValueBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-replace-value-blank", "test-replace-value-blank", 100);
+    $ret = $this->roma_client->replace("test-replace-value-blank", "", 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.59
+   * No.
+   */
+  public function testReplaceKeyBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->replace("", "test-replace-key-blank", 100);
+      $this->fail('replace() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_replace() failure", $e->getMessage());
+  }
+
+  /**
+   * No.60
+   * No.
+   */
+  public function testAppend() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-append", "test-append1", 100);
+    $ret = $this->roma_client->append("test-append", "test-append2", 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.61
+   * No.
+   */
+  public function testAppendKeyNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->append(NULL, "test-append-key-null", 100);
+      $this->fail('append() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_append() failure", $e->getMessage());
+  }
+
+  /**
+   * No.62
+   * No.
+   */
+  public function testAppendValueNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-append-val-null", "test-append-val-null", 100);
+    $ret = $this->roma_client->append("test-append-val-null", NULL, 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.63
+   * No.
+   */
+  public function testAppendLarge() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-append-large", "test-append-large", 100);
+    $ret = $this->roma_client->append("test-append-large", $this->val_100kb, 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.64
+   * No.
+   */
+  public function testAppendValueBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-append-value-blank", "test-append-value-blank", 100);
+    $ret = $this->roma_client->append("test-append-value-blank", "", 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.65
+   * No.
+   */
+  public function testAppendKeyBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->append("", "test-append-key-blank", 100);
+      $this->fail('append() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_append() failure", $e->getMessage());
+  }
+
+  /**
+   * No.66
+   * No.
+   */
+  public function testPrepend() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-prepend", "test-prepend1", 100);
+    $ret = $this->roma_client->prepend("test-prepend", "test-prepend2", 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.67
+   * No.
+   */
+  public function testPrependKeyNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->prepend(NULL, "test-prepend-key-null", 100);
+      $this->fail('prepend() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_prepend() failure", $e->getMessage());
+  }
+
+  /**
+   * No.68
+   * No.
+   */
+  public function testPrependValueNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-prepend-val-null", "test-prepend-val-null", 100);
+    $ret = $this->roma_client->prepend("test-prepend-val-null", NULL, 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.69
+   * No.
+   */
+  public function testPrependLarge() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-prepend-large", "test-prepend-large", 100);
+    $ret = $this->roma_client->prepend("test-prepend-large", $this->val_100kb, 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.70
+   * No.
+   */
+  public function testPrependValueBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-prepend-value-blank", "test-prepend-value-blank", 100);
+    $ret = $this->roma_client->prepend("test-prepend-value-blank", "", 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.71
+   * No.
+   */
+  public function testPrependKeyBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->prepend("", "test-prepend-key-blank", 100);
+      $this->fail('prepend() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_prepend() failure", $e->getMessage());
+  }
+
+  /**
+   * No.72
+   * No.
+   */
+  public function testCas() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-cas", "test-cas1", 100);
+    $cas_id = $this->roma_client->cas_unique("test-cas");
+    $ret = $this->roma_client->cas("test-cas", "test-cas2", $cas_id[0], 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.73
+   * No.
+   */
+  public function testCasKeyNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $this->roma_client->set("test-cas-key-null", "test-cas-key-null1", 100);
+      $cas_id = $this->roma_client->cas_unique("test-cas-key-null");
+      $ret = $this->roma_client->cas(NULL, "test-cas-key-null2", $cas_is[0], 100);
+      $this->fail('cas() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_cas() failure", $e->getMessage());
+  }
+
+  /**
+   * No.74
+   * No.
+   */
+  public function testCasValueNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-cas-val-null", "test-cas-val-null1", 100);
+    $cas_id = $this->roma_client->cas_unique("test-cas-val-null");
+    $ret = $this->roma_client->cas("test-cas-val-null", NULL, $cas_id[0], 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.75
+   * No.
+   */
+  public function testCasLarge() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-cas-large", "test-cas-large", 100);
+    $cas_id = $this->roma_client->cas_unique("test-cas-large");
+    $ret = $this->roma_client->cas("test-cas-large", $this->val_100kb, $cas_id[0], 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.76
+   * No.
+   */
+  public function testCasValueBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-cas-value-blank", "test-cas-value-blank", 100);
+    $cas_id = $this->roma_client->cas_unique("test-cas-value-blank");
+    $ret = $this->roma_client->cas("test-cas-value-blank", "", $cas_id[0], 100);
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.77
+   * No.
+   */
+  public function testCasKeyBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $this->roma_client->set("test-cas-key-blank", "test-cas-key-blank1", 100);
+      $cas_id = $this->roma_client->cas_unique("test-cas-key-blank");
+      $ret = $this->roma_client->cas("", "test-cas-key-blank2", $cas_is[0], 100);
+      $this->fail('cas() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_cas() failure", $e->getMessage());
+  }
+
+  /**
+   * No.78
+   * No.
+   */
+  public function testCasExists() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-cas-exists", "test-cas-exists1", 100);
+    $cas_id = $this->roma_client->cas_unique("test-cas-exists");
+    $this->roma_client->cas("test-cas-exists", "test-cas-exists2", $cas_id[0], 100);
+    $ret = $this->roma_client->cas("test-cas-exists", "test-cas-exists3", $cas_id[0], 100);
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.79
+   * No.
+   */
+  public function testCasNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $ret = $this->roma_client->cas("test-cas-null", "test-cas-null", NULL, 100);
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.80
+   * No.
+   */
+  public function testCasBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->cas("test-cas-blank", "test-cas-blank", "", 100);
+      $this->fail('cas() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_cas() expects parameter 5 to be long, string given", $e->getMessage());
+  }
+
+  /**
+   * No.81
+   * No.
+   */
+  public function testIncr() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-incr", "0", 100);
+    $val = $this->roma_client->incr("test-incr", 1);
+    $this->assertEquals("1" ,$val);
+  }
+
+  /**
+   * No.82
+   * No.
+   */
+  public function testIncrMinus() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-incr-minus", "1", 100);
+    $val = $this->roma_client->incr("test-incr-minus", -1);
+    $this->assertEquals("0", $val);
+  }
+
+  /**
+   * No.83
+   * No.
+   */
+  public function testIncrNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-incr-null", "0", 100);
+    $val = $this->roma_client->incr("test-incr-null", NULL);
+    $this->assertEquals("0", $val);
+  }
+
+  /**
+   * No.84
+   * No.
+   */
+  public function testIncrBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $this->roma_client->set("test-incr-blank", "0", 100);
+      $val = $this->roma_client->incr("test-incr-blank", "");
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_incr() expects parameter 3 to be long, string given", $e->getMessage());
+  }
+
+  /**
+   * No.85
+   * No.
+   */
+  public function testIncrKeyNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $val = $this->roma_client->incr(NULL, 1);
+      $this->fail('val = ' . $val . ' incr() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_incr() failure", $e->getMessage());
+  }
+
+  /**
+   * No.86
+   * No.
+   */
+  public function testIncrKeyBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $val = $this->roma_client->incr("", 1);
+      $this->fail('val = ' . $val . ' incr() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_incr() failure", $e->getMessage());
+  }
+
+  /**
+   * No.87
+   * No.
+   */
+  public function testDecr() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-decr", "1", 100);
+    $val = $this->roma_client->decr("test-decr", 1);
+    $this->assertEquals("0" ,$val);
+  }
+
+  /**
+   * No.88
+   * No.
+   */
+  public function testDecrMinus() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-decr-minus", "1", 100);
+    $val = $this->roma_client->decr("test-decr-minus", -1);
+    $this->assertEquals("2", $val);
+  }
+
+  /**
+   * No.89
+   * No.
+   */
+  public function testDecrNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-decr-null", "0", 100);
+    $val = $this->roma_client->decr("test-decr-null", NULL);
+    $this->assertEquals("0", $val);
+  }
+
+  /**
+   * No.90
+   * No.
+   */
+  public function testDecrBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $this->roma_client->set("test-decr-blank", "0", 100);
+      $val = $this->roma_client->decr("test-decr-blank", "");
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_decr() expects parameter 3 to be long, string given", $e->getMessage());
+  }
+
+  /**
+   * No.91
+   * No.
+   */
+  public function testDecrKeyNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $val = $this->roma_client->decr(NULL, 1);
+      $this->fail('val = ' . $val . ' decr() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_decr() failure", $e->getMessage());
+  }
+
+  /**
+   * No.92
+   * No.
+   */
+  public function testDecrKeyBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $val = $this->roma_client->decr("", 1);
+      $this->fail('val = ' . $val . ' decr() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_decr() failure", $e->getMessage());
+  }
+
+  /**
+   * No.93
+   * No.
+   */
+  public function testCasUnique() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->set("test-cas_unique", "test-cas_unique", 100);
+    $val = $this->roma_client->cas_unique("test-cas_unique");
+    $this->assertEquals("0", $val[0]);
+  }
+
+  /**
+   * No.94
+   * No.
+   */
+  public function testCasUniqueNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $val = $this->roma_client->cas_unique(NULL);
+      $this->fail('val = ' . $val[0] . ' cas_unique() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_cas_unique() failure", $e->getMessage());
+  }
+
+  /**
+   * No.95
+   * No.
+   */
+  public function testCasUniqueBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $val = $this->roma_client->cas_unique("");
+      $this->fail('val = ' . $val[0] . ' cas_unique() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_cas_unique() failure", $e->getMessage());
+  }
+
+  /**
+   * No.96
+   * No.
+   */
+  public function testAlistClear() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->alist_sized_insert("test-alist_clear", 10, "test-alist_clear");
+    $ret = $this->roma_client->alist_clear("test-alist_clear");
+    $this->roma_client->delete("test-alist_clear"); // after test task.
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.97
+   * No.
+   */
+  public function testAlistClearNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $val = $this->roma_client->alist_clear(NULL);
+      $this->fail('val = ' . $val . ' alist_clear() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_clear() failure", $e->getMessage());
+  }
+
+  /**
+   * No.98
+   * No.
+   */
+  public function testAlistClearBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $val = $this->roma_client->alist_clear("");
+      $this->fail('val = ' . $val . ' alist_clear() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_clear() failure", $e->getMessage());
+  }
+
+  /**
+   * No.99
+   * No.
+   */
+  public function testAlistLength() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->alist_sized_insert("test-alist_length", 10, "test-alist_length1");
+    $this->roma_client->alist_sized_insert("test-alist_length", 10, "test-alist_length2");
+    $val = $this->roma_client->alist_length("test-alist_length");
+    $this->roma_client->delete("test-alist_length"); // after test task.
+    $this->assertEquals("2", $val);
+  }
+
+  /**
+   * No.100
+   * No.
+   */
+  public function testAlistLengthNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $val = $this->roma_client->alist_length(NULL);
+      $this->fail('val = ' . $val . ' alist_length() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_length() failure", $e->getMessage());
+  }
+
+  /**
+   * No.101
+   * No.
+   */
+  public function testAlistLengthBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $val = $this->roma_client->alist_length("");
+      $this->fail('val = ' . $val . ' alist_length() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_length() failure", $e->getMessage());
+  }
+
+  /**
+   * No.102
+   * No.
+   */
+  public function testAlistUpdateAt() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->alist_sized_insert("test-alist_update_at", 10, "test-alist_update_at1");
+    $this->roma_client->alist_sized_insert("test-alist_update_at", 10, "test-alist_update_at2");
+    $ret = $this->roma_client->alist_update_at("test-alist_update_at", 0, "test-alist_update_at3");
+    $this->roma_client->delete("test-alist_update_at"); // after test task.
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.103
+   * No.
+   */
+  public function testAlistUpdateAtKeyNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->alist_update_at(NULL, 0, "test-alist_update_at-key-null");
+      $this->fail('val = ' . $ret . ' alist_update_at() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_update_at() failure", $e->getMessage());
+  }
+
+  /**
+   * No.104
+   * No.
+   */
+  public function testAlistUpdateAtValueNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->alist_sized_insert("test-alist_update_at-val-null", 10, "test-alist_update_at-val-null1");
+    $this->roma_client->alist_sized_insert("test-alist_update_at-val-null", 10, "test-alist_update_at-val-null2");
+    $ret = $this->roma_client->alist_update_at("test-alist_update_at", 0, NULL);
+    $this->roma_client->delete("test-alist_update_at-val-null"); // after test task.
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.105
+   * No.
+   */
+  public function testAlistUpdateAtLarge() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->alist_sized_insert("test-alist_update_at-large", 10, "test-alist_update_at-large1");
+    $this->roma_client->alist_sized_insert("test-alist_update_at-large", 10, "test-alist_update_at-large2");
+    $ret = $this->roma_client->alist_update_at("test-alist_update_at-large", 0, $this->val_100kb);
+    $this->roma_client->delete("test-alist_update_at-large"); // after test task.
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.106
+   * No.
+   */
+  public function testAlistUpdateAtKeyBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $ret = $this->roma_client->alist_update_at("", 0, "test-alist_update_at-key-blank");
+      $this->fail('val = ' . $ret . ' alist_update_at() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_update_at() failure", $e->getMessage());
+  }
+
+  /**
+   * No.107
+   * No.
+   */
+  public function testAlistUpdateAtValueBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->alist_sized_insert("test-alist_update_at-value-blank", 10, "test-alist_update_at-value-blank1");
+    $this->roma_client->alist_sized_insert("test-alist_update_at-value-blank", 10, "test-alist_update_at-value-blank2");
+    $ret = $this->roma_client->alist_update_at("test-alist_update_at-value-blank", 0, "");
+    $this->roma_client->delete("test-alist_update_at-value-blank"); // after test task.
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.108
+   * No.
+   */
+  public function testAlistUpdateAtMinus() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->alist_sized_insert("test-alist_update_at-minus", 10, "test-alist_update_at-minus1");
+    $this->roma_client->alist_sized_insert("test-alist_update_at-minus", 10, "test-alist_update_at-minus2");
+    $ret = $this->roma_client->alist_update_at("test-alist_update_at-minus", -1, "test-alist_update_at-minus3");
+    $this->roma_client->delete("test-alist_update_at-minus"); // after test task.
+    $this->assertFalse($ret);
+  }
+
+  /**
+   * No.109
+   * No.
+   */
+  public function testAlistUpdateAtIndexNull() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    $this->roma_client->alist_sized_insert("test-alist_update_at-index-null", 10, "test-alist_update_at-index-null1");
+    $this->roma_client->alist_sized_insert("test-alist_update_at-index-null", 10, "test-alist_update_at-index-null2");
+    $ret = $this->roma_client->alist_update_at("test-alist_update_at-index-null", NULL, "test-alist_update_at-index-null3");
+    $this->roma_client->delete("test-alist_update_at-index-null"); // after test task.
+    $this->assertTrue($ret);
+  }
+
+  /**
+   * No.110
+   * No.
+   */
+  public function testAlistUpdateAtIndexBlank() {
+    print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
+    try {
+      $this->roma_client->alist_sized_insert("test-alist_update_at-index-blank", 10, "test-alist_update_at-index-blank1");
+      $this->roma_client->alist_sized_insert("test-alist_update_at-index-blank", 10, "test-alist_update_at-index-blank2");
+      $ret = $this->roma_client->alist_update_at("test-alist_update_at-index-blank", "", "test-alist_update_at-index-blank3");
+    } catch (Exception $e) {
+      $this->roma_client->delete("test-alist_update_at-index-blank"); // after test task.
+    }
+    $this->assertEquals("rmc_alist_update_at() expects parameter 3 to be long, string given", $e->getMessage());
+  }
+
+}
 ?>
