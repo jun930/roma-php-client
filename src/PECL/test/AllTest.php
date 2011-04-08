@@ -10,7 +10,7 @@ class AllTest extends PHPUnit_Framework_TestSuite {
         //$suite->addTestSuite('RomaClientTest');
         //$suite->addTestSuite('RomaClientUnitTest0');
         $suite->addTestSuite('RomaClientUnitTest1');
-        //$suite->addTestSuite('RomaClientUnitTest2');
+        $suite->addTestSuite('RomaClientUnitTest2');
         return $suite;
     }
 }
