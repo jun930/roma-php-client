@@ -428,8 +428,12 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
   public function testIncrNotFound()
   {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
-    $val = $this->roma_client->incr("CMD_NOT_FOUND", 1);
-    $this->assertEquals(-1, $val);
+    try {
+      $val = $this->roma_client->incr("CMD_NOT_FOUND", 1);
+      $this->fail($val . ' incr() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_incr() failure", $e->getMessage());
   }
 
   /**
@@ -450,8 +454,12 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
   public function testDecrNotFound()
   {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
-    $val = $this->roma_client->decr("CMD_NOT_FOUND", 1);
-    $this->assertEquals(-1, $val);
+    try {
+      $val = $this->roma_client->decr("CMD_NOT_FOUND", 1);
+      $this->fail($val . ' decr() test failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_decr() failure", $e->getMessage());
   }
 
   /**
@@ -527,8 +535,12 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
   public function testAlistLengthNotFound()
   {
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
-    $ret = $this->roma_client->alist_length("CMD_NOT_FOUND");
-    $this->assertFalse($ret);
+    try {
+      $this->roma_client->alist_length("CMD_NOT_FOUND");
+      $this->fail('alist_length() failure');
+    } catch (Exception $e) {
+    }
+    $this->assertEquals("rmc_alist_length() failure", $e->getMessage());
   }
 
   /**
@@ -753,7 +765,7 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
     try {
       $ret = $this->roma_client->incr("CMD_ERROR", 1);
-      $this->fail('incr() test failure');
+      $this->fail($ret . ' incr() test failure');
     } catch (Exception $e) {
     }
     $this->assertEquals("rmc_incr() failure", $e->getMessage());
@@ -768,7 +780,7 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
     try {
       $ret = $this->roma_client->decr("CMD_ERROR", 1);
-      $this->fail('decr() test failure');
+      $this->fail($ret . ' decr() test failure');
     } catch (Exception $e) {
     }
     $this->assertEquals("rmc_decr() failure", $e->getMessage());
@@ -813,7 +825,7 @@ class RomaClientUnitTest extends PHPUnit_Framework_TestCase
     print "\n***TEST*** ". get_class($this) ."::". __FUNCTION__ . "\n";
     try {
       $ret = $this->roma_client->alist_length("CMD_ERROR");
-      $this->fail('alist_length() test failure');
+      $this->fail($ret . ' alist_length() test failure');
     } catch (Exception $e) {
     }
     $this->assertEquals("rmc_alist_length() failure", $e->getMessage());
