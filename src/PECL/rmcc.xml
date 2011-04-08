@@ -13,11 +13,11 @@
   </maintainer>
  </maintainers>
  <release>
-  <version>0.0.1</version>
-  <date>2010-06-15</date>
-  <state>alpha</state>
+  <version>0.9.1</version>
+  <date>2011-04-08</date>
+  <state>beta</state>
   <notes>
-    First version.
+    Second version.
   </notes>
  </release>
  <changelog>
@@ -555,7 +555,7 @@
          // @@@ log...
        }
      }
-     RETURN_LONG(rakuten::rmcc::RMC_RET_EXCEPTION);
+     RETURN_LONG(rakuten::rmcc::RMC_RET_INCDEC_ERROR);
   ]]>
   </code>
   <test>
@@ -600,7 +600,7 @@
          // @@@ log...
        }
      }
-     RETURN_LONG(rakuten::rmcc::RMC_RET_EXCEPTION);
+     RETURN_LONG(rakuten::rmcc::RMC_RET_INCDEC_ERROR);
   ]]>
   </code>
   <test>
@@ -984,7 +984,7 @@
          // @@@ log...
        }
      }
-     RETURN_LONG(rakuten::rmcc::RMC_RET_EXCEPTION);
+     RETURN_LONG(rakuten::rmcc::RMC_RET_ALIST_LENGTH_ERROR);
   ]]>
   </code>
   <test>

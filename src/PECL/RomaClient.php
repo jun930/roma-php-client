@@ -8,7 +8,7 @@
  * @example test.php
  * @author hiroaki.kubota@mail.rakuten.co.jp
  * @date 2010-06-15
- * @version $Id: RomaClient.php,v 1.0 2010/06/15 09:00:00 hiroaki.kubota Exp $
+ * @version $Id: RomaClient.php,v 0.9.1 2011/04/08 09:00:00 hiroaki.kubota Exp $
  */
 #extension_loaded('phprmcc') || dl('phprmcc.so');
 
@@ -17,6 +17,7 @@ class RomaClient {
     private $default_timeout = 2000;
     const RMC_RET_ERROR = 1;
     const RMC_RET_EXCEPTION = 2;
+    const RMC_RET_INCDEC_EXCEPTION = -1;
     const RMC_RET_CAS_UNIQUE_NO_VALUE = -1;
     const RMC_RET_ALIST_LENGTH_NOT_FOUND = -1;
     /**
@@ -218,7 +219,7 @@ class RomaClient {
      */
     public function incr($key, $param) {
       $result = rmc_incr($this->client_id, $key, $param, $this->default_timeout);
-      if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
+      if (is_null($result) || $result == RomaClient::RMC_RET_INCDEC_EXCEPTION) {
         throw new Exception("rmc_incr() failure");
       }
       return $result;      
@@ -231,8 +232,8 @@ class RomaClient {
      * @return On success new value of the item's data, other than -1.
      */
     public function decr($key, $param) {
-      $result = rmc_incr($this->client_id, $key, $param, $this->default_timeout);
-      if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
+      $result = rmc_decr($this->client_id, $key, $param, $this->default_timeout);
+      if (is_null($result) || $result == RomaClient::RMC_RET_INCDEC_EXCEPTION) {
         throw new Exception("rmc_decr() failure");
       }
       return $result;      
@@ -248,7 +249,7 @@ class RomaClient {
       $result = rmc_cas_unique($this->client_id, $key, $this->default_timeout);
       if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
         throw new Exception("rmc_cas_unique() failure");
-      }else if ( $result == RMC_RET_CAS_UNIQUE_NO_VALUE ) {
+      } else if ($result == RomaClient::RMC_RET_ERROR) {
         return False;
       }
       return array($result[2],$result[0]);
@@ -353,10 +354,8 @@ class RomaClient {
      */
     public function alist_length($key) {
       $result = rmc_alist_length($this->client_id,$key,$this->default_timeout);
-      if ( is_null($result) || $result == RomaClient::RMC_RET_EXCEPTION ) {
+      if (is_null($result) || $result == RomaClient::RMC_RET_ALIST_LENGTH_NOT_FOUND) {
         throw new Exception("rmc_alist_length() failure");
-      }else if ( $result == RomaClient::RMC_RET_ALIST_LENGTH_NOT_FOUND ) {
-        return False;
       }
       return $result;
     }
