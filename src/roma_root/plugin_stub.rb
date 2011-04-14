@@ -176,11 +176,11 @@ module Roma
       end
 
       def ev_alist_update_at(s)
-        if ( s.length < 5 )
+        if ( s.length < 4 )
           send_data("SERVER_ERROR Parameters not enough !\r\n")
           return
         end
-        v = read_bytes(s[4].to_i)
+        v = read_bytes(s[3].to_i)
         read_bytes(2)
         stub(s,{
                'NOT_FOUND'    => "NOT_FOUND\r\n",
