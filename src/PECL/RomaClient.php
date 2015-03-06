@@ -66,6 +66,15 @@ class RomaClient {
       }
       return False;
     }
+
+    /**
+     * @brief Close roma-client instance.
+     * @param
+     * @return
+     */
+    public function close() {
+      rmc_term($this->client_id);
+    }
     
     /**
      * @brief Set command timeout (msec)
