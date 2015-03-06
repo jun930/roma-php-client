@@ -443,9 +443,16 @@ namespace rakuten {
       }
     }
     void RomaConnection::term(){
+      for ( node_list_t::iterator it(nodelist.begin()),itend(nodelist.end());
+            it != itend;
+            it++ ) {
+        if ( it->second.is_connect() )
+          it->second.disconnect();
+      }
     }
 
     RomaConnection::~RomaConnection(){
+      this->term();
     }
   }
 }

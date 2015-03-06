@@ -1,13 +1,17 @@
 *************************
 * ROMA C++ client library
   * How to build ? (librmcc.so)
-    $ ./build.sh
-     It'll create file. 'lib/librmcc.so'
+    $ ./build.sh (32bit)
+    $ M64=1 ./build.sh (64bit)
+     It'll create file. 'lib/librmcc.so' or 'lib/lib64r_rmcc.so'
   * REFERENCE
-     View doc-html/index.html
+    View doc-html/index.html
   * How to run test ? (librmccd.so)
-    $ WITH_TEST=1 ./build.sh 
-
+    * Prepare to test.
+      - Install CppUnit
+    * Test
+      $ WITH_TEST=1 ./build.sh (32bit)
+      $ M64=1 WITH_TEST=1 ./build.sh (64bit)
     * How to contorol romad cluster on the test ?
      - You can use 'roma.bash'
        - For example.(ALL node start) [11211,11212,11213,11214]
@@ -17,7 +21,6 @@
        - For example.(The node 1 start) [11211,11212,11213,11214]
        $ ./roma.bash start1
        - Other ...  please see the 'roma.bash'
-
     * How to get coverege ? 
        $ ./gcov.sh 
 
@@ -29,8 +32,9 @@
       # pear install -a codegen_pecl
     * Build
       $ cd PECL
-      $ WITH_CONFIGURE=1 ./build.sh
-       It'll create file. 'PECL/phprmcc/modules/librmcc.so'
+      $ WITH_CONFIGURE=1 ./build.sh (32bit)
+      $ M64=1 WITH_CONFIGURE=1 ./build.sh (64bit)
+       It'll create file. 'PECL/phprmcc/modules/phprmcc.so'
 
 *************************
 * ROMA PHP client class (RomaClient.php)
@@ -48,7 +52,8 @@
       # pear install phpunit/PHPUnit
       # pear install xdebug
     * Test
-      $ WITH_TEST=1 ./build.sh
+      $ WITH_TEST=1 ./build.sh (32bit)
+      $ M64=1 WITH_TEST=1 ./build.sh (64bit)
   * TEST
      Please try to kick the test-script to check settings.
      $ export LD_LIBRARY_PATH=`pwd`/lib:$LD_LIBRARY_PATH
